@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Анкета соискателя — ПВЗ</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
 :root{--ozon:#005BFF;--wb:#CB11AB;--ym:#FFCC00;--ym-text:#333;--bg:#f4f6f9;--surface:#fff;--text:#1a1a2e;--text2:#5a6a7a;--border:#dce3ed;--radius:14px;--radius-sm:8px;--shadow:0 2px 8px rgba(0,0,0,.06);--shadow-lg:0 8px 30px rgba(0,0,0,.1);--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -163,14 +162,12 @@ textarea{resize:vertical;min-height:70px}
   <footer class="footer"><div class="container"><p>Работа на ПВЗ © 2026</p></div></footer>
 </div>
 
-<script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/esm/supabase.min.js';
+
 const SUPABASE_URL = 'https://jqseowqgwvyjbagzkwpm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc2Vvd3Fnd3Z5amJhZ3prd3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTM1NDEsImV4cCI6MjA5ODEyOTU0MX0.6PA1jsxwR0wg9S6sH8QgcKQJ3qo5N4QjEPVTMNR7L2Y';
-let sb;
-try{
-  const { createClient } = supabaseJs;
-  sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-}catch(e){console.warn('Supabase not loaded',e)}
+let sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const ADDRS = [
   {addr:'Северная 9', mp:'ozon', label:'Ozon — Северная 9'},
