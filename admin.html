@@ -12,7 +12,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 
 /* LOGIN */
 .screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
-.screen[hidden]{display:none}
+.screen[hidden]{display:none!important}
+#dash-screen{display:block;min-height:100vh}
 .login{background:var(--surface);border-radius:var(--radius);padding:36px;box-shadow:var(--shadow-lg);width:100%;max-width:380px}
 .login h1{font-size:1.4rem;text-align:center}
 .login .sub{text-align:center;margin-bottom:22px;color:var(--text2);font-size:.9rem}
@@ -170,12 +171,11 @@ tr:hover td{background:#f8fafc}
   </div>
 </div>
 
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/esm/supabase.min.js';
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
 const SUPABASE_URL='https://jqseowqgwvyjbagzkwpm.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc2Vvd3Fnd3Z5amJhZ3prd3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTM1NDEsImV4cCI6MjA5ODEyOTU0MX0.6PA1jsxwR0wg9S6sH8QgcKQJ3qo5N4QjEPVTMNR7L2Y';
-let sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
 const MP={ozon:'OZON',wb:'Wildberries',yandex_market:'Яндекс Маркет'};
 const ST={new:'Новая',reviewed:'Просмотрено',hired:'Принят',rejected:'Отказ'};
@@ -238,7 +238,7 @@ async function load(){
     let q=sb.from('applications').select('*').order('created_at',{ascending:false});
     if(fSt.value)q=q.eq('status',fSt.value);
     if(fMp.value)q=q.eq('marketplace',fMp.value);
-    if(fSrch.value.trim())q=q.or(`full_name.ilike.%${fSrch.value.trim()}%,phone.ilike.%${fSrch.value.trim()}%,tg.ilike.%${fSrch.value.trim()}%`);
+    if(fSrch.value.trim())q=q.or(`full_name.ilike.%${fSrch.value.trim()}%,phone.ilike.%${fSrch.value.trim()}%,email.ilike.%${fSrch.value.trim()}%`);
     const {data,error}=await q;
     if(error)throw error;
     apps=data||[];render();stats()
