@@ -260,6 +260,7 @@ form.addEventListener('submit',async e=>{
   if(data.backup_address_1===data.primary_address)return showErr('Резервный адрес совпадает с желаемым');
   if(data.backup_address_2===data.primary_address)return showErr('Резервный адрес совпадает с желаемым');
   if(data.backup_address_2&&data.backup_address_2===data.backup_address_1)return showErr('Резервные адреса совпадают');
+  if(!sb)return showErr('Сервер базы данных не загружен. Проверьте подключение к интернету.');
 
   setLoad(true);
   try{
