@@ -13,6 +13,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 /* LOGIN */
 .screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
 .screen[hidden]{display:none}
+#dash-screen{display:block;min-height:100vh}
+#dash-screen[hidden]{display:none}
 .login{background:var(--surface);border-radius:var(--radius);padding:36px;box-shadow:var(--shadow-lg);width:100%;max-width:380px}
 .login h1{font-size:1.4rem;text-align:center}
 .login .sub{text-align:center;margin-bottom:22px;color:var(--text2);font-size:.9rem}
@@ -40,6 +42,7 @@ input:focus,select:focus{border-color:var(--ozon);box-shadow:0 0 0 3px rgba(0,91
 .hdr-row h1{font-size:1.15rem}
 .hdr-r{display:flex;align-items:center;gap:14px}
 .admin-name{font-size:.85rem;opacity:.9}
+.pw-mob{display:none}
 
 /* STATS */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:18px 0}
@@ -66,6 +69,7 @@ th{background:#f8fafc;padding:10px 14px;text-align:left;font-weight:600;font-siz
 td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
 tr:hover td{background:#f8fafc}
 .empty{text-align:center;color:var(--text2);padding:36px!important}
+.card-list{display:none}
 
 .badge{display:inline-flex;padding:3px 9px;border-radius:20px;font-size:.75rem;font-weight:500}
 .badge.new{background:#dbeafe;color:#1d4ed8}
@@ -109,10 +113,12 @@ tr:hover td{background:#f8fafc}
   .container{padding:0 12px}
   .login{padding:24px 18px}
   .login h1{font-size:1.2rem}
-  .hdr{padding:10px 0}
-  .hdr-row h1{font-size:1rem}
-  .hdr-r{gap:6px}
-  .admin-name{font-size:.7rem}
+  .hdr{padding:8px 0}
+  .hdr-row h1{font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hdr-r{gap:2px}
+  .admin-name{display:none}
+  .pw-dt{display:none}
+  .pw-mob{display:inline}
   .stats{grid-template-columns:repeat(3,1fr);gap:4px;margin:8px 0}
   .sc{padding:4px 4px;border-left-width:1px;border-radius:6px}
   .sc .v{font-size:.7rem}
@@ -169,7 +175,7 @@ tr:hover td{background:#f8fafc}
   <header class="hdr">
     <div class="container hdr-row">
       <h1>Панель управления</h1>
-      <div class="hdr-r"><span class="admin-name" id="admin-name"></span><button class="btn btn-o btn-sm" id="pw-btn" style="color:#fff;border-color:rgba(255,255,255,.4)">Пароль</button><button class="btn btn-o btn-sm" id="logout-btn" style="color:#fff;border-color:rgba(255,255,255,.4)">Выйти</button></div>
+      <div class="hdr-r"><span class="admin-name" id="admin-name"></span><button class="btn btn-o btn-sm" id="pw-btn" style="color:#fff;border-color:rgba(255,255,255,.4)"><span class="pw-dt">Пароль</span><span class="pw-mob">🔑</span></button><button class="btn btn-o btn-sm" id="logout-btn" style="color:#fff;border-color:rgba(255,255,255,.4)">Выйти</button></div>
     </div>
   </header>
 
