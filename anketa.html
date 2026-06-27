@@ -183,12 +183,12 @@ textarea{resize:vertical;min-height:70px}
   <footer class="footer"><div class="container"><p>Работа на ПВЗ © 2026</p></div></footer>
 </div>
 
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/esm/supabase.min.js';
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
 const SUPABASE_URL = 'https://jqseowqgwvyjbagzkwpm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc2Vvd3Fnd3Z5amJhZ3prd3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTM1NDEsImV4cCI6MjA5ODEyOTU0MX0.6PA1jsxwR0wg9S6sH8QgcKQJ3qo5N4QjEPVTMNR7L2Y';
-let sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let sb;
+try{sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)}catch(e){console.warn('Supabase init error',e)}
 
 const ADDRS = [
   {addr:'Северная 9', mp:'ozon', label:'Ozon — Северная 9'},
