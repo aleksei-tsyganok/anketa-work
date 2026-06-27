@@ -6,63 +6,95 @@
 <title>Анкета соискателя — ПВЗ</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
-:root{--bg:#f5f7fa;--surface:#fff;--primary:#6366f1;--primary-hover:#4f46e5;--danger:#ef4444;--success:#22c55e;--text:#1e293b;--text2:#64748b;--border:#e2e8f0;--radius:12px;--radius-sm:8px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+:root{--ozon:#005BFF;--wb:#CB11AB;--ym:#FFCC00;--ym-text:#333;--bg:#f4f6f9;--surface:#fff;--text:#1a1a2e;--text2:#5a6a7a;--border:#dce3ed;--radius:14px;--radius-sm:8px;--shadow:0 2px 8px rgba(0,0,0,.06);--shadow-lg:0 8px 30px rgba(0,0,0,.1);--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
 .app{min-height:100vh;display:flex;flex-direction:column}
 .container{max-width:720px;margin:0 auto;padding:0 20px;width:100%}
 
-.header{background:linear-gradient(135deg,var(--primary),#8b5cf6);color:#fff;padding:36px 0 28px}
-.header h1{font-size:1.6rem;font-weight:700}
-.header .sub{opacity:.85;font-size:.95rem;margin-top:4px}
+/* Header — градиент Ozon → WB → YM */
+.header{
+  background:linear-gradient(135deg,var(--ozon) 0%,#3a7bff 25%,var(--wb) 55%,#e03db3 65%,var(--ym) 100%);
+  color:#fff;padding:36px 0 28px;position:relative;overflow:hidden
+}
+.header::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 80% 40%,rgba(255,204,0,.35),transparent 60%);
+  pointer-events:none
+}
+.header .container{position:relative;z-index:1}
+.header h1{font-size:1.6rem;font-weight:800;letter-spacing:-.3px}
+.header .sub{opacity:.9;font-size:.95rem;margin-top:4px}
 
 .form{padding:28px 0}
-.sec{background:var(--surface);border-radius:var(--radius);padding:24px;margin-bottom:16px;box-shadow:var(--shadow)}
+.sec{background:var(--surface);border-radius:var(--radius);padding:24px;margin-bottom:16px;box-shadow:var(--shadow);border:1px solid var(--border)}
 .sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.step{width:30px;height:30px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:600;flex-shrink:0}
-.sec-hdr h2{font-size:1.1rem;font-weight:600}
+.step{
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,var(--ozon),var(--wb));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;font-weight:700;flex-shrink:0
+}
+.sec-hdr h2{font-size:1.1rem;font-weight:700}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:600px){.grid{grid-template-columns:1fr}}
 
 .fg{margin-bottom:0}
-.fg label{display:block;font-size:.82rem;font-weight:500;margin-bottom:5px;color:var(--text2)}
-input,textarea,select{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.92rem;font-family:inherit;background:var(--surface);color:var(--text);transition:border-color .2s,box-shadow .2s;outline:none}
-input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.fg label{display:block;font-size:.82rem;font-weight:600;margin-bottom:5px;color:var(--text2);letter-spacing:.2px}
+input,textarea,select{
+  width:100%;padding:11px 14px;
+  border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  font-size:.92rem;font-family:inherit;background:var(--surface);color:var(--text);
+  transition:border-color .25s,box-shadow .25s;outline:none
+}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--ozon);
+  box-shadow:0 0 0 3px rgba(0,91,255,.12)
+}
 textarea{resize:vertical;min-height:70px}
 
-.mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media(max-width:500px){.mp-grid{grid-template-columns:1fr}}
-.mp-card{display:flex;align-items:center;justify-content:center;padding:18px 12px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s;text-align:center;font-weight:600;font-size:.95rem;background:var(--surface);user-select:none}
-.mp-card input{display:none}
-.mp-card:has(input:checked){border-color:var(--primary);background:rgba(99,102,241,.06);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
-.mp-card:hover{border-color:var(--primary)}
-
-.selfie-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+/* Селфи */
+.selfie-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
 .selfie-wrap input[type="file"]{display:none}
-.selfie-pv{width:180px;height:180px;border-radius:50%;border:3px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;overflow:hidden;background:var(--bg)}
-.selfie-pv:hover{border-color:var(--primary)}
-.selfie-pv.has{border-style:solid;border-color:var(--success)}
-.selfie-pv img{width:100%;height:100%;object-fit:cover}
-.sp-icon{font-size:2.8rem}
-.sp-hint{font-size:.78rem;color:var(--text2);margin-top:3px}
+.selfie-pv{
+  width:200px;height:200px;border-radius:50%;
+  border:3px dashed var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .25s;overflow:hidden;background:var(--bg);position:relative
+}
+.selfie-pv:hover{border-color:var(--ozon);background:linear-gradient(135deg,rgba(0,91,255,.04),rgba(203,17,171,.04))}
+.selfie-pv.has{border-style:solid;border-color:var(--wb)}
+.selfie-pv img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:50%}
+.sp-icon{font-size:3rem;pointer-events:none;position:relative;z-index:1}
+.sp-hint{font-size:.8rem;color:var(--text2);margin-top:4px;pointer-events:none;position:relative;z-index:1}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border:1.5px solid transparent;border-radius:var(--radius-sm);font-size:.88rem;font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s;white-space:nowrap}
+/* Кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 22px;border:1.5px solid transparent;border-radius:var(--radius-sm);font-size:.88rem;font-weight:600;font-family:inherit;cursor:pointer;transition:all .25s;white-space:nowrap}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.btn-p{background:var(--primary);color:#fff;border-color:var(--primary)}
-.btn-p:hover:not(:disabled){background:var(--primary-hover)}
+.btn-p{
+  background:linear-gradient(135deg,var(--ozon),var(--wb));
+  color:#fff;border:none
+}
+.btn-p:hover:not(:disabled){
+  background:linear-gradient(135deg,#004ad4,#a8158f);
+  box-shadow:0 4px 15px rgba(0,91,255,.3)
+}
 .btn-o{background:transparent;color:var(--text);border-color:var(--border)}
-.btn-o:hover{border-color:var(--primary);color:var(--primary)}
-.btn-lg{padding:14px 30px;font-size:1rem}
-.btn-block{width:100%}
+.btn-o:hover{border-color:var(--ozon);color:var(--ozon)}
+.btn-lg{padding:14px 32px;font-size:1rem;border-radius:10px}
 
-.err{background:#fef2f2;color:var(--danger);border:1px solid #fecaca;border-radius:var(--radius-sm);padding:12px 16px;font-size:.88rem;margin-bottom:14px;display:none}
+.err{
+  background:#fff0f0;color:#d32f2f;
+  border:1px solid #ffcdd2;border-radius:var(--radius-sm);
+  padding:12px 16px;font-size:.88rem;margin-bottom:14px;display:none
+}
 .success{text-align:center;padding:48px 20px;display:none}
 .success .si{font-size:3rem;display:block;margin-bottom:12px}
 .success h3{font-size:1.25rem;margin-bottom:8px}
 .success p{color:var(--text2);margin-bottom:22px}
 
 .acts{text-align:center;padding:6px 0 36px}
-.loader{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
+.loader{width:18px;height:18px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 .footer{margin-top:auto;text-align:center;padding:18px 0;color:var(--text2);font-size:.82rem}
@@ -84,40 +116,35 @@ textarea{resize:vertical;min-height:70px}
         <div class="grid">
           <div class="fg"><label for="fn">ФИО *</label><input type="text" id="fn" required placeholder="Иванов Иван Иванович"></div>
           <div class="fg"><label for="bd">Дата рождения</label><input type="date" id="bd"></div>
-          <div class="fg"><label for="ph">Телефон *</label><input type="tel" id="ph" required placeholder="+7 (999) 123-45-67"></div>
-          <div class="fg"><label for="em">Email</label><input type="email" id="em" placeholder="ivan@example.com"></div>
+          <div class="fg"><label for="ph">Телефон *</label><input type="tel" id="ph" required placeholder="+7 (999) 123-45-67" inputmode="numeric" value="+7"></div>
+          <div class="fg"><label for="em">Telegram</label><input type="text" id="em" placeholder="@username или t.me/username"></div>
         </div>
       </div>
 
       <div class="sec">
         <div class="sec-hdr"><span class="step">2</span><h2>О себе</h2></div>
         <div class="fg" style="margin-bottom:12px"><label for="exp">Опыт работы</label><textarea id="exp" rows="3" placeholder="Где и кем работали ранее"></textarea></div>
-        <div class="fg" style="margin-bottom:12px"><label for="edu">Образование</label><input type="text" id="edu" placeholder="Среднее, средне-специальное, высшее"></div>
+        <div class="fg" style="margin-bottom:12px"><label for="edu">Образование</label><select id="edu"><option value="">— выберите —</option><option value="учится">Учусь</option><option value="высшее">Высшее</option><option value="среднее">Среднее</option><option value="планирует">Планирую поступать</option><option value="не_планирует">Не планирую учиться</option></select></div>
         <div class="fg"><label for="ab">О себе</label><textarea id="ab" rows="4" placeholder="Почему хотите работать на ПВЗ"></textarea></div>
       </div>
 
       <div class="sec">
         <div class="sec-hdr"><span class="step">3</span><h2>Селфи</h2></div>
         <div class="selfie-wrap">
-          <div class="selfie-pv" id="spv"><span class="sp-icon">📸</span><p class="sp-hint">Нажмите для загрузки</p></div>
-          <input type="file" id="selfie" accept="image/*" capture="user">
-          <button type="button" class="btn btn-o" id="selfie-btn">Выбрать фото</button>
+          <label class="selfie-pv" id="spv" for="selfie">
+            <span class="sp-icon">📸</span>
+            <p class="sp-hint">Нажмите для загрузки</p>
+          </label>
+          <input type="file" id="selfie" accept="image/*">
+          <button type="button" class="btn btn-p" id="selfie-btn">Выбрать фото</button>
         </div>
       </div>
 
       <div class="sec">
-        <div class="sec-hdr"><span class="step">4</span><h2>Маркетплейс и адрес</h2></div>
-        <div class="fg" style="margin-bottom:14px">
-          <label>Маркетплейс *</label>
-          <div class="mp-grid" id="mp-grid">
-            <label class="mp-card"><input type="radio" name="mp" value="ozon"><span>OZON</span></label>
-            <label class="mp-card"><input type="radio" name="mp" value="wb"><span>Wildberries</span></label>
-            <label class="mp-card"><input type="radio" name="mp" value="yandex_market"><span>Яндекс Маркет</span></label>
-          </div>
-        </div>
-        <div class="fg" style="margin-bottom:10px"><label for="addr1">Основной адрес ПВЗ *</label><select id="addr1" required><option value="">— выберите маркетплейс —</option></select></div>
-        <div class="fg" style="margin-bottom:10px"><label for="addr2">Резервный адрес 1</label><select id="addr2"><option value="">— не выбран —</option></select></div>
-        <div class="fg"><label for="addr3">Резервный адрес 2</label><select id="addr3"><option value="">— не выбран —</option></select></div>
+        <div class="sec-hdr"><span class="step">4</span><h2>Выбор адреса ПВЗ</h2></div>
+        <div class="fg" style="margin-bottom:10px"><label for="addr1">Желаемый адрес ПВЗ *</label><select id="addr1" required></select></div>
+        <div class="fg" style="margin-bottom:10px"><label for="addr2">Резервный адрес 1</label><select id="addr2"></select></div>
+        <div class="fg"><label for="addr3">Резервный адрес 2</label><select id="addr3"></select></div>
       </div>
 
       <div class="err" id="err"></div>
@@ -139,33 +166,42 @@ textarea{resize:vertical;min-height:70px}
 <script>
 const SUPABASE_URL = 'https://jqseowqgwvyjbagzkwpm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc2Vvd3Fnd3Z5amJhZ3prd3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTM1NDEsImV4cCI6MjA5ODEyOTU0MX0.6PA1jsxwR0wg9S6sH8QgcKQJ3qo5N4QjEPVTMNR7L2Y';
-const { createClient } = supabaseJs;
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let sb;
+try{
+  const { createClient } = supabaseJs;
+  sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}catch(e){console.warn('Supabase not loaded',e)}
 
-const ADDR = {
-  ozon:['ул. Тверская, 1, стр. 1','пр-т Мира, 12','Ленинградский пр-т, 47','ул. Арбат, 36','Кутузовский пр-т, 22','ул. Новый Арбат, 15'],
-  wb:['ул. Ленина, 25','пр-т Вернадского, 88','ул. Профсоюзная, 56','Шоссе Энтузиастов, 31','ул. Вавилова, 9','МКАД, 14-й км'],
-  yandex_market:['ул. Садовая-Кудринская, 15','пр-т Андропова, 22','ул. Большая Дмитровка, 20','Ленинградское шоссе, 16','ул. Таганская, 31','Рязанский пр-т, 2']
-};
+const ADDRS = [
+  {addr:'Северная 9', mp:'ozon', label:'Ozon — Северная 9'},
+  {addr:'Ольховая 2а', mp:'ozon', label:'Ozon — Ольховая 2а'},
+  {addr:'Яковлева 46', mp:'ozon', label:'Ozon — Яковлева 46'},
+  {addr:'Киренского 126', mp:'yandex_market', label:'Яндекс Маркет — Киренского 126'}
+];
 
 const form=document.getElementById('form'), selfieInp=document.getElementById('selfie'), spv=document.getElementById('spv'), selfieBtn=document.getElementById('selfie-btn');
-const mpRadios=document.querySelectorAll('input[name="mp"]'), a1=document.getElementById('addr1'), a2=document.getElementById('addr2'), a3=document.getElementById('addr3');
+const a1=document.getElementById('addr1'), a2=document.getElementById('addr2'), a3=document.getElementById('addr3');
 const subBtn=document.getElementById('submit-btn'), btnText=document.getElementById('btn-text'), btnLoad=document.getElementById('btn-loader');
 const errEl=document.getElementById('err'), successEl=document.getElementById('success'), againBtn=document.getElementById('again');
+const phInp=document.getElementById('ph');
 let selFile=null;
 
-function fillAddrs(mp){
-  const list=ADDR[mp]||[];
-  [a1,a2,a3].forEach(sel=>{
-    const cur=sel.value;
-    sel.innerHTML='<option value="">— выберите адрес —</option>';
-    list.forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o)});
-    if([...sel.options].some(o=>o.value===cur))sel.value=cur;else sel.value=''
-  })
-}
+// --- Маска телефона +7 ---
+phInp.addEventListener('input',function(){
+  let digs=this.value.replace(/\D/g,'');
+  if(digs.startsWith('8'))digs='7'+digs.slice(1);
+  if(digs.length===1&&digs[0]==='7'){this.value='+7';return}
+  if(!digs.startsWith('7'))digs='7'+digs;
+  digs=digs.slice(1,11);
+  let s='+7';
+  if(digs.length>0)s+=' ('+digs.slice(0,3);
+  if(digs.length>3)s+=') '+digs.slice(3,6);
+  if(digs.length>6)s+='-'+digs.slice(6,8);
+  if(digs.length>8)s+='-'+digs.slice(8,10);
+  this.value=s;
+});
 
-mpRadios.forEach(r=>r.addEventListener('change',()=>{if(r.checked)fillAddrs(r.value)}));
-spv.addEventListener('click',()=>selfieInp.click());
+// --- Селфи ---
 selfieBtn.addEventListener('click',()=>selfieInp.click());
 
 selfieInp.addEventListener('change',e=>{
@@ -179,26 +215,51 @@ selfieInp.addEventListener('change',e=>{
   r.readAsDataURL(f);hideErr()
 });
 
+// --- Адреса ---
+function fillAddrs(){
+  const taken=[a1.value,a2.value,a3.value].filter(v=>v);
+  [a1,a2,a3].forEach(sel=>{
+    const cur=sel.value;
+    sel.innerHTML='<option value="">— выберите адрес —</option>';
+    ADDRS.forEach(({addr,label})=>{
+      const o=document.createElement('option');o.value=addr;o.textContent=label;
+      if(taken.includes(addr)&&addr!==cur)o.disabled=true;
+      sel.appendChild(o)
+    });
+    if([...sel.options].some(o=>o.value===cur))sel.value=cur;else sel.value=''
+  })
+}
+[a1,a2,a3].forEach(sel=>sel.addEventListener('change',fillAddrs));
+fillAddrs();
+
+// --- Отправка ---
 form.addEventListener('submit',async e=>{
   e.preventDefault();hideErr();
-  const mp=document.querySelector('input[name="mp"]:checked');
-  if(!mp)return showErr('Выберите маркетплейс');
+  const selAddr=a1.value;
+  const found=ADDRS.find(a=>a.addr===selAddr);
+  if(!found)return showErr('Выберите желаемый адрес ПВЗ');
+  const mpVal=found.mp;
+  const phone=phInp.value.trim();
+  const pdigs=phone.replace(/\D/g,'');
+  if(pdigs.length<7)return showErr('Введите номер телефона — минимум 7 цифр после +7');
   const data={
     full_name:document.getElementById('fn').value.trim(),
-    phone:document.getElementById('ph').value.trim(),
+    phone,
     email:document.getElementById('em').value.trim(),
     birth_date:document.getElementById('bd').value||null,
     experience:document.getElementById('exp').value.trim(),
     education:document.getElementById('edu').value.trim(),
     about:document.getElementById('ab').value.trim(),
-    marketplace:mp.value,
+    marketplace:mpVal,
     primary_address:a1.value,
     backup_address_1:a2.value||null,
     backup_address_2:a3.value||null
   };
   if(!data.full_name)return showErr('Укажите ФИО');
-  if(!data.phone)return showErr('Укажите телефон');
-  if(!data.primary_address)return showErr('Выберите основной адрес');
+  if(!data.primary_address)return showErr('Выберите желаемый адрес ПВЗ');
+  if(data.backup_address_1===data.primary_address)return showErr('Резервный адрес совпадает с желаемым');
+  if(data.backup_address_2===data.primary_address)return showErr('Резервный адрес совпадает с желаемым');
+  if(data.backup_address_2&&data.backup_address_2===data.backup_address_1)return showErr('Резервные адреса совпадают');
 
   setLoad(true);
   try{
@@ -223,7 +284,7 @@ againBtn.addEventListener('click',()=>{
   form.reset();form.hidden=false;successEl.style.display='none';selFile=null;
   spv.innerHTML='<span class="sp-icon">📸</span><p class="sp-hint">Нажмите для загрузки</p>';
   spv.classList.remove('has');
-  [a1,a2,a3].forEach(s=>{s.innerHTML='<option value="">— сначала выберите маркетплейс —</option>'});
+  fillAddrs();
   hideErr();window.scrollTo({top:0,behavior:'smooth'})
 });
 
