@@ -12,8 +12,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 
 /* LOGIN */
 .screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
-.screen[hidden]{display:none!important}
-#dash-screen{display:block;min-height:100vh}
+.screen[hidden]{display:none}
 .login{background:var(--surface);border-radius:var(--radius);padding:36px;box-shadow:var(--shadow-lg);width:100%;max-width:380px}
 .login h1{font-size:1.4rem;text-align:center}
 .login .sub{text-align:center;margin-bottom:22px;color:var(--text2);font-size:.9rem}
@@ -57,7 +56,7 @@ input:focus,select:focus{border-color:var(--ozon);box-shadow:0 0 0 3px rgba(0,91
 .ft .fg{min-width:150px;flex:1;margin-bottom:0}
 .ft .fg.srch{flex:2}
 .ft-acts{display:flex;gap:6px;padding-bottom:2px}
-@media(max-width:700px){.ft{flex-direction:column}.ft .fg{min-width:auto}}
+@media(max-width:700px){.ft{flex-wrap:wrap}.ft .fg{min-width:auto;flex:1 1 calc(50% - 5px)}.ft .fg.srch{flex:1 1 100%;order:3}.ft-acts{flex:1 1 100%;order:4}}
 
 /* TABLE */
 .tw{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow-x:auto;margin-bottom:40px}
@@ -105,6 +104,47 @@ tr:hover td{background:#f8fafc}
 .ds{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--border);margin:0 auto}
 .cf{margin-top:12px}
 .cf textarea{min-height:55px}
+
+@media(max-width:480px){
+  .container{padding:0 12px}
+  .login{padding:24px 18px}
+  .login h1{font-size:1.2rem}
+  .hdr{padding:10px 0}
+  .hdr-row h1{font-size:1rem}
+  .hdr-r{gap:6px}
+  .admin-name{font-size:.7rem}
+  .stats{grid-template-columns:repeat(3,1fr);gap:4px;margin:8px 0}
+  .sc{padding:4px 4px;border-left-width:1px;border-radius:6px}
+  .sc .v{font-size:.7rem}
+  .sc .l{font-size:.5rem;letter-spacing:.1px}
+  .ft{gap:6px;flex-direction:row}
+  .ft .fg{min-width:0;flex:1 1 calc(50% - 3px)}
+  .ft .fg.srch{flex:1 1 100%}
+  .ft-acts{gap:4px;width:100%;flex:1 1 100%}
+  .ft-acts .btn{flex:1}
+  .tw{overflow-x:visible;border-radius:0;box-shadow:none;background:transparent;margin:0 -12px}
+  .tw table,.tw thead{display:none}
+  .tw .loading{margin:0 12px;border-radius:var(--radius-sm)}
+  .card-list{display:flex;flex-direction:column;gap:8px;padding:8px 12px 12px}
+  .card{background:var(--surface);border-radius:var(--radius-sm);padding:10px 12px;box-shadow:var(--shadow)}
+  .card-line{display:flex;justify-content:space-between;align-items:center;gap:4px;padding:2px 0;font-size:.8rem}
+  .card-label{font-size:.68rem;color:var(--text2);white-space:nowrap;flex-shrink:0}
+  .card-val{text-align:right;min-width:0}
+  .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+  .card-user{display:flex;align-items:center;gap:6px;font-weight:600;font-size:.85rem;min-width:0}
+  .card-user .thumb,.card-user .thumb-ph{width:28px;height:28px}
+  .card-user .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .card-acts{display:flex;gap:6px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}
+  .card-acts .btn{flex:1;font-size:.75rem;padding:5px 6px}
+  .modal{padding:8px}
+  .mc{border-radius:12px;max-height:90vh}
+  .mh{padding:12px 14px 0}
+  .mh h2{font-size:1rem}
+  .md{padding:12px 14px}
+  .mf{padding:10px 14px 14px;gap:4px}
+  .mf .btn{font-size:.78rem;padding:7px 8px;min-width:0}
+  .ds{width:72px;height:72px}
+}
 </style>
 </head>
 <body>
@@ -129,7 +169,7 @@ tr:hover td{background:#f8fafc}
   <header class="hdr">
     <div class="container hdr-row">
       <h1>Панель управления</h1>
-      <div class="hdr-r"><span class="admin-name" id="admin-name"></span><button class="btn btn-o btn-sm" id="logout-btn" style="color:#fff;border-color:rgba(255,255,255,.4)">Выйти</button></div>
+      <div class="hdr-r"><span class="admin-name" id="admin-name"></span><button class="btn btn-o btn-sm" id="pw-btn" style="color:#fff;border-color:rgba(255,255,255,.4)">Пароль</button><button class="btn btn-o btn-sm" id="logout-btn" style="color:#fff;border-color:rgba(255,255,255,.4)">Выйти</button></div>
     </div>
   </header>
 
@@ -156,7 +196,7 @@ tr:hover td{background:#f8fafc}
   </main>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL (детали анкеты) -->
 <div class="modal" id="modal" hidden>
   <div class="mb" id="modal-bg"></div>
   <div class="mc">
@@ -171,11 +211,31 @@ tr:hover td{background:#f8fafc}
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script>
+<!-- MODAL (смена пароля) -->
+<div class="modal" id="pw-modal" hidden>
+  <div class="mb" id="pw-modal-bg"></div>
+  <div class="mc" style="max-width:400px">
+    <div class="mh"><h2 id="pw-title">Сменить пароль</h2><button class="mx" id="pw-modal-x">&times;</button></div>
+    <form id="pw-form">
+      <div class="md">
+        <div class="fg"><label for="pw-old">Текущий пароль</label><input type="password" id="pw-old" required></div>
+        <div class="fg"><label for="pw-new">Новый пароль</label><input type="password" id="pw-new" required minlength="6"></div>
+        <div class="fg"><label for="pw-confirm">Подтвердите новый пароль</label><input type="password" id="pw-confirm" required></div>
+        <div class="err" id="pw-err"></div>
+      </div>
+      <div class="mf" style="border-top:none;padding-top:0">
+        <button type="submit" class="btn btn-p btn-block" id="pw-save">Сохранить</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/esm/supabase.min.js';
+
 const SUPABASE_URL='https://jqseowqgwvyjbagzkwpm.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc2Vvd3Fnd3Z5amJhZ3prd3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTM1NDEsImV4cCI6MjA5ODEyOTU0MX0.6PA1jsxwR0wg9S6sH8QgcKQJ3qo5N4QjEPVTMNR7L2Y';
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+let sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
 const MP={ozon:'OZON',wb:'Wildberries',yandex_market:'Яндекс Маркет'};
 const ST={new:'Новая',reviewed:'Просмотрено',hired:'Принят',rejected:'Отказ'};
@@ -208,7 +268,14 @@ async function init(){
 }
 
 function showLogin(){loginScreen.hidden=false;dashScreen.hidden=true}
-function showDash(){loginScreen.hidden=true;dashScreen.hidden=false;adminName.textContent=admin.full_name;load()}
+function showDash(){loginScreen.hidden=true;dashScreen.hidden=false;adminName.textContent=admin.full_name;checkPwChange();load()}
+
+async function checkPwChange(){
+  try{
+    const {data:{user}}=await sb.auth.getUser();
+    if(user&&!user.user_metadata?.password_changed)showPwModal(true)
+  }catch(e){console.warn(e)}
+}
 
 loginForm.addEventListener('submit',async e=>{
   e.preventDefault();loginErr.style.display='none';
@@ -233,12 +300,13 @@ resetF.addEventListener('click',()=>{fSt.value='';fMp.value='';fSrch.value='';lo
 
 async function load(){
   loading.style.display='block';tbody.innerHTML='';
+  document.querySelector('.card-list')?.remove();
   if(!sb){loading.textContent='Supabase не загружен';return}
   try{
     let q=sb.from('applications').select('*').order('created_at',{ascending:false});
     if(fSt.value)q=q.eq('status',fSt.value);
     if(fMp.value)q=q.eq('marketplace',fMp.value);
-    if(fSrch.value.trim())q=q.or(`full_name.ilike.%${fSrch.value.trim()}%,phone.ilike.%${fSrch.value.trim()}%,email.ilike.%${fSrch.value.trim()}%`);
+    if(fSrch.value.trim())q=q.or(`full_name.ilike.%${fSrch.value.trim()}%,phone.ilike.%${fSrch.value.trim()}%,tg.ilike.%${fSrch.value.trim()}%`);
     const {data,error}=await q;
     if(error)throw error;
     apps=data||[];render();stats()
@@ -247,7 +315,7 @@ async function load(){
 }
 
 function render(){
-  if(!apps.length){tbody.innerHTML='<tr><td colspan="7" class="empty">Нет данных</td></tr>';return}
+  if(!apps.length){tbody.innerHTML='<tr><td colspan="7" class="empty">Нет данных</td></tr>';let cl=document.querySelector('.card-list');if(cl)cl.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:20px">Нет данных</div>';return}
   tbody.innerHTML=apps.map(a=>`<tr>
     <td>${dmy(a.created_at)}</td>
     <td><div style="display:flex;align-items:center;gap:7px">${a.selfie_url?`<img src="${a.selfie_url}" class="thumb" onclick="window.open('${a.selfie_url}')">`:'<div class="thumb-ph">?</div>'}<strong>${esc(a.full_name)}</strong></div></td>
@@ -257,7 +325,21 @@ function render(){
     <td><span class="badge ${a.status}">${ST[a.status]||a.status}</span></td>
     <td><button class="btn btn-o btn-sm view" data-id="${a.id}">Открыть</button></td>
   </tr>`).join('');
-  tbody.querySelectorAll('.view').forEach(b=>b.addEventListener('click',()=>open(b.dataset.id)))
+  tbody.querySelectorAll('.view').forEach(b=>b.addEventListener('click',()=>open(b.dataset.id)));
+
+  let cl=document.querySelector('.card-list');if(!cl){cl=document.createElement('div');cl.className='card-list';document.querySelector('.tw').appendChild(cl)}
+  cl.innerHTML=apps.map(a=>`<div class="card">
+    <div class="card-top">
+      <div class="card-user">${a.selfie_url?`<img src="${a.selfie_url}" class="thumb">`:'<div class="thumb-ph">?</div>'}<span class="name">${esc(a.full_name)}</span></div>
+      <span class="badge ${a.status}">${ST[a.status]||a.status}</span>
+    </div>
+    <div class="card-line"><span class="card-label">Тел.</span><span class="card-val">${esc(a.phone)}</span></div>
+    <div class="card-line"><span class="card-label">Маркет</span><span class="card-val">${MP[a.marketplace]||a.marketplace}</span></div>
+    <div class="card-line"><span class="card-label">Адрес</span><span class="card-val">${esc(a.primary_address)}</span></div>
+    <div class="card-line"><span class="card-label">Дата</span><span class="card-val">${dmy(a.created_at)}</span></div>
+    <div class="card-acts"><button class="btn btn-o btn-sm view" data-id="${a.id}">Открыть</button></div>
+  </div>`).join('');
+  cl.querySelectorAll('.view').forEach(b=>b.addEventListener('click',()=>open(b.dataset.id)))
 }
 
 function stats(){
@@ -308,6 +390,53 @@ function open(id){
 modalX.addEventListener('click',()=>modal.hidden=true);
 modalBg.addEventListener('click',()=>modal.hidden=true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')modal.hidden=true});
+
+// --- Смена пароля ---
+const pwModal=document.getElementById('pw-modal'),pwForm=document.getElementById('pw-form');
+const pwOld=document.getElementById('pw-old'),pwNew=document.getElementById('pw-new'),pwConfirm=document.getElementById('pw-confirm');
+const pwErr=document.getElementById('pw-err'),pwTitle=document.getElementById('pw-title'),pwBtn=document.getElementById('pw-btn');
+const pwModalX=document.getElementById('pw-modal-x'),pwModalBg=document.getElementById('pw-modal-bg'),pwSave=document.getElementById('pw-save');
+
+let pwForced=false;
+
+function showPwModal(forced){
+  pwForced=forced;
+  pwTitle.textContent=forced?'Требуется смена пароля':'Сменить пароль';
+  pwForm.reset();pwErr.style.display='none';
+  pwModal.hidden=false;
+  if(forced){
+    pwModalX.style.display='none';
+    pwModalBg.style.pointerEvents='none';
+    pwOld.placeholder='Введите текущий пароль';
+  }else{
+    pwModalX.style.display='';
+    pwModalBg.style.pointerEvents='';
+    pwOld.placeholder='';
+  }
+}
+function hidePwModal(){pwModal.hidden=true;pwForced=false}
+
+pwBtn.addEventListener('click',()=>showPwModal(false));
+pwModalX.addEventListener('click',hidePwModal);
+pwModalBg.addEventListener('click',()=>{if(!pwForced)hidePwModal()});
+
+pwForm.addEventListener('submit',async e=>{
+  e.preventDefault();pwErr.style.display='none';
+  const old=pwOld.value.trim(),nw=pwNew.value.trim(),cf=pwConfirm.value.trim();
+  if(nw.length<6){pwErr.textContent='Новый пароль — минимум 6 символов';pwErr.style.display='block';return}
+  if(nw!==cf){pwErr.textContent='Новые пароли не совпадают';pwErr.style.display='block';return}
+  pwSave.disabled=true;
+  try{
+    const {error}=await sb.auth.updateUser({password:nw});
+    if(error)throw error;
+    await sb.auth.updateUser({data:{password_changed:true}});
+    hidePwModal();
+    if(pwForced)load()
+  }catch(e){
+    pwErr.textContent=e.message||'Ошибка смены пароля';
+    pwErr.style.display='block'
+  }finally{pwSave.disabled=false}
+});
 
 function dmy(s){if(!s)return'—';const d=new Date(s);return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}

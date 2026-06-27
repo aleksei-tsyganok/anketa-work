@@ -97,6 +97,27 @@ textarea{resize:vertical;min-height:70px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 .footer{margin-top:auto;text-align:center;padding:18px 0;color:var(--text2);font-size:.82rem}
+
+@media(max-width:480px){
+  .container{padding:0 12px}
+  .header{padding:24px 0 18px}
+  .header h1{font-size:1.25rem}
+  .header .sub{font-size:.85rem}
+  .form{padding:16px 0}
+  .sec{padding:16px;border-radius:12px;margin-bottom:12px}
+  .sec-hdr{margin-bottom:14px}
+  .sec-hdr h2{font-size:1rem}
+  .step{width:26px;height:26px;font-size:.75rem}
+  .grid{gap:10px}
+  input,textarea,select{padding:10px 12px;font-size:.88rem}
+  .selfie-pv{width:150px;height:150px}
+  .sp-icon{font-size:2.2rem}
+  .btn-lg{padding:13px 20px;font-size:.92rem;width:100%}
+  .err{font-size:.82rem;padding:10px 14px}
+  .success{padding:32px 12px}
+  .success .si{font-size:2.2rem}
+  .footer{padding:14px 0;font-size:.78rem}
+}
 </style>
 </head>
 <body>
@@ -162,11 +183,12 @@ textarea{resize:vertical;min-height:70px}
   <footer class="footer"><div class="container"><p>Работа на ПВЗ © 2026</p></div></footer>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/esm/supabase.min.js';
+
 const SUPABASE_URL = 'https://jqseowqgwvyjbagzkwpm.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc2Vvd3Fnd3Z5amJhZ3prd3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTM1NDEsImV4cCI6MjA5ODEyOTU0MX0.6PA1jsxwR0wg9S6sH8QgcKQJ3qo5N4QjEPVTMNR7L2Y';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const ADDRS = [
   {addr:'Северная 9', mp:'ozon', label:'Ozon — Северная 9'},
@@ -256,7 +278,7 @@ form.addEventListener('submit',async e=>{
   if(data.backup_address_1===data.primary_address)return showErr('Резервный адрес совпадает с желаемым');
   if(data.backup_address_2===data.primary_address)return showErr('Резервный адрес совпадает с желаемым');
   if(data.backup_address_2&&data.backup_address_2===data.backup_address_1)return showErr('Резервные адреса совпадают');
-  if(typeof supabase === 'undefined')return showErr('Сервер базы данных не загружен. Проверьте подключение к интернету.');
+  if(!sb)return showErr('Сервер базы данных не загружен. Проверьте подключение к интернету.');
 
   setLoad(true);
   try{
