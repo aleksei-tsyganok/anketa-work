@@ -6,7 +6,7 @@
 <title>Панель управления — ПВЗ Анкеты</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <style>
-:root{--bg:#f5f7fa;--surface:#fff;--primary:#6366f1;--primary-hover:#4f46e5;--danger:#ef4444;--success:#22c55e;--text:#1e293b;--text2:#64748b;--border:#e2e8f0;--radius:12px;--radius-sm:8px;--shadow:0 1px 3px rgba(0,0,0,.08);--shadow-lg:0 4px 20px rgba(0,0,0,.1);--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+:root{--ozon:#005BFF;--wb:#CB11AB;--ym:#FFCC00;--bg:#f4f6f9;--surface:#fff;--text:#1a1a2e;--text2:#5a6a7a;--border:#dce3ed;--radius:14px;--radius-sm:8px;--shadow:0 2px 8px rgba(0,0,0,.06);--shadow-lg:0 8px 30px rgba(0,0,0,.1);--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6}
 .container{max-width:1100px;margin:0 auto;padding:0 20px;width:100%}
@@ -20,21 +20,23 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .fg{margin-bottom:14px}
 .fg label{display:block;font-size:.82rem;font-weight:500;margin-bottom:5px;color:var(--text2)}
 input,textarea,select{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.92rem;font-family:inherit;background:var(--surface);color:var(--text);outline:none;transition:border-color .2s}
-input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+input:focus,select:focus{border-color:var(--ozon);box-shadow:0 0 0 3px rgba(0,91,255,.12)}
 .err{background:#fef2f2;color:var(--danger);border:1px solid #fecaca;border-radius:var(--radius-sm);padding:10px 14px;font-size:.85rem;margin-bottom:12px;display:none}
 
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border:1.5px solid transparent;border-radius:var(--radius-sm);font-size:.85rem;font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s;white-space:nowrap}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.btn-p{background:var(--primary);color:#fff;border-color:var(--primary)}
-.btn-p:hover:not(:disabled){background:var(--primary-hover)}
+.btn-p{background:linear-gradient(135deg,var(--ozon),var(--wb));color:#fff;border:none}
+.btn-p:hover:not(:disabled){background:linear-gradient(135deg,#004ad4,#a8158f);box-shadow:0 4px 15px rgba(0,91,255,.3)}
 .btn-o{background:transparent;color:var(--text);border-color:var(--border)}
-.btn-o:hover{border-color:var(--primary);color:var(--primary)}
+.btn-o:hover{border-color:var(--ozon);color:var(--ozon)}
 .btn-sm{padding:5px 12px;font-size:.78rem}
 .btn-block{width:100%}
 .btn-lg{padding:12px 24px;font-size:.92rem}
 
 /* HEADER */
-.hdr{background:linear-gradient(135deg,var(--primary),#8b5cf6);color:#fff;padding:14px 0}
+.hdr{background:linear-gradient(135deg,var(--ozon) 0%,#3a7bff 25%,var(--wb) 55%,#e03db3 65%,var(--ym) 100%);color:#fff;padding:14px 0;position:relative;overflow:hidden}
+.hdr::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 40%,rgba(255,204,0,.35),transparent 60%);pointer-events:none}
+.hdr .container{position:relative;z-index:1}
 .hdr-row{display:flex;align-items:center;justify-content:space-between}
 .hdr-row h1{font-size:1.15rem}
 .hdr-r{display:flex;align-items:center;gap:14px}
@@ -73,7 +75,7 @@ tr:hover td{background:#f8fafc}
 .badge.rejected{background:#fee2e2;color:#dc2626}
 
 .thumb{width:36px;height:36px;border-radius:50%;object-fit:cover;cursor:pointer;border:2px solid var(--border);transition:border-color .2s}
-.thumb:hover{border-color:var(--primary)}
+.thumb:hover{border-color:var(--ozon)}
 .thumb-ph{width:36px;height:36px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:.85rem;flex-shrink:0}
 
 /* MODAL */
@@ -98,7 +100,7 @@ tr:hover td{background:#f8fafc}
 .df:last-child{margin-bottom:0}
 .dl{display:block;font-size:.74rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
 .dv{font-size:.9rem;line-height:1.5}
-.dv a{color:var(--primary);text-decoration:none}
+.dv a{color:var(--ozon);text-decoration:none}
 .dv a:hover{text-decoration:underline}
 .ds{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--border);margin:0 auto}
 .cf{margin-top:12px}
@@ -172,8 +174,11 @@ tr:hover td{background:#f8fafc}
 <script>
 const SUPABASE_URL='https://jqseowqgwvyjbagzkwpm.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc2Vvd3Fnd3Z5amJhZ3prd3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTM1NDEsImV4cCI6MjA5ODEyOTU0MX0.6PA1jsxwR0wg9S6sH8QgcKQJ3qo5N4QjEPVTMNR7L2Y';
-const {createClient}=supabaseJs;
-const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+let sb;
+try{
+  const {createClient}=supabaseJs;
+  sb=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+}catch(e){console.warn('Supabase init error',e)}
 
 const MP={ozon:'OZON',wb:'Wildberries',yandex_market:'Яндекс Маркет'};
 const ST={new:'Новая',reviewed:'Просмотрено',hired:'Принят',rejected:'Отказ'};
@@ -190,14 +195,18 @@ const modalX=document.getElementById('modal-x'),modalBg=document.getElementById(
 let admin=null,apps=[];
 
 async function init(){
-  const {data:{session}}=await sb.auth.getSession();
-  if(session){
-    const {data:{user}}=await sb.auth.getUser();
-    if(user){
-      const {data}=await sb.from('admins').select('*').eq('email',user.email).single();
-      if(data){admin=data;showDash();return}
+  try{
+    if(sb){
+      const {data:{session}}=await sb.auth.getSession();
+      if(session){
+        const {data:{user}}=await sb.auth.getUser();
+        if(user){
+          const {data}=await sb.from('admins').select('*').eq('email',user.email).single();
+          if(data){admin=data;showDash();return}
+        }
+      }
     }
-  }
+  }catch(e){console.warn('Init error',e)}
   showLogin()
 }
 
@@ -206,6 +215,7 @@ function showDash(){loginScreen.hidden=true;dashScreen.hidden=false;adminName.te
 
 loginForm.addEventListener('submit',async e=>{
   e.preventDefault();loginErr.style.display='none';
+  if(!sb){loginErr.textContent='Supabase не загрузился, проверьте подключение к интернету';loginErr.style.display='block';return}
   try{
     const {error}=await sb.auth.signInWithPassword({email:lem.value.trim(),password:lpw.value});
     if(error)throw error;
@@ -213,7 +223,10 @@ loginForm.addEventListener('submit',async e=>{
     const {data}=await sb.from('admins').select('*').eq('email',user.email).single();
     if(!data){loginErr.textContent='Нет прав администратора';loginErr.style.display='block';return}
     admin=data;showDash()
-  }catch(e){loginErr.textContent=e.message;loginErr.style.display='block'}
+  }catch(e){
+    loginErr.textContent=e.message||'Ошибка входа';
+    loginErr.style.display='block'
+  }
 });
 
 logoutBtn.addEventListener('click',async()=>{await sb.auth.signOut();admin=null;showLogin()});
@@ -223,11 +236,12 @@ resetF.addEventListener('click',()=>{fSt.value='';fMp.value='';fSrch.value='';lo
 
 async function load(){
   loading.style.display='block';tbody.innerHTML='';
+  if(!sb){loading.textContent='Supabase не загружен';return}
   try{
     let q=sb.from('applications').select('*').order('created_at',{ascending:false});
     if(fSt.value)q=q.eq('status',fSt.value);
     if(fMp.value)q=q.eq('marketplace',fMp.value);
-    if(fSrch.value.trim())q=q.or(`full_name.ilike.%${fSrch.value.trim()}%,phone.ilike.%${fSrch.value.trim()}%,email.ilike.%${fSrch.value.trim()}%`);
+    if(fSrch.value.trim())q=q.or(`full_name.ilike.%${fSrch.value.trim()}%,phone.ilike.%${fSrch.value.trim()}%,tg.ilike.%${fSrch.value.trim()}%`);
     const {data,error}=await q;
     if(error)throw error;
     apps=data||[];render();stats()
