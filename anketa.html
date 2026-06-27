@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Анкета соискателя — ПВЗ</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--bg:#f5f7fa;--surface:#fff;--primary:#6366f1;--primary-hover:#4f46e5;--danger:#ef4444;--success:#22c55e;--text:#1e293b;--text2:#64748b;--border:#e2e8f0;--radius:12px;--radius-sm:8px;--shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+.app{min-height:100vh;display:flex;flex-direction:column}
+.container{max-width:720px;margin:0 auto;padding:0 20px;width:100%}
+
+.header{background:linear-gradient(135deg,var(--primary),#8b5cf6);color:#fff;padding:36px 0 28px}
+.header h1{font-size:1.6rem;font-weight:700}
+.header .sub{opacity:.85;font-size:.95rem;margin-top:4px}
+
+.form{padding:28px 0}
+.sec{background:var(--surface);border-radius:var(--radius);padding:24px;margin-bottom:16px;box-shadow:var(--shadow)}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.step{width:30px;height:30px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:600;flex-shrink:0}
+.sec-hdr h2{font-size:1.1rem;font-weight:600}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+
+.fg{margin-bottom:0}
+.fg label{display:block;font-size:.82rem;font-weight:500;margin-bottom:5px;color:var(--text2)}
+input,textarea,select{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.92rem;font-family:inherit;background:var(--surface);color:var(--text);transition:border-color .2s,box-shadow .2s;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+textarea{resize:vertical;min-height:70px}
+
+.mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:500px){.mp-grid{grid-template-columns:1fr}}
+.mp-card{display:flex;align-items:center;justify-content:center;padding:18px 12px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .2s;text-align:center;font-weight:600;font-size:.95rem;background:var(--surface);user-select:none}
+.mp-card input{display:none}
+.mp-card:has(input:checked){border-color:var(--primary);background:rgba(99,102,241,.06);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.mp-card:hover{border-color:var(--primary)}
+
+.selfie-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+.selfie-wrap input[type="file"]{display:none}
+.selfie-pv{width:180px;height:180px;border-radius:50%;border:3px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;overflow:hidden;background:var(--bg)}
+.selfie-pv:hover{border-color:var(--primary)}
+.selfie-pv.has{border-style:solid;border-color:var(--success)}
+.selfie-pv img{width:100%;height:100%;object-fit:cover}
+.sp-icon{font-size:2.8rem}
+.sp-hint{font-size:.78rem;color:var(--text2);margin-top:3px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border:1.5px solid transparent;border-radius:var(--radius-sm);font-size:.88rem;font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-p{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-p:hover:not(:disabled){background:var(--primary-hover)}
+.btn-o{background:transparent;color:var(--text);border-color:var(--border)}
+.btn-o:hover{border-color:var(--primary);color:var(--primary)}
+.btn-lg{padding:14px 30px;font-size:1rem}
+.btn-block{width:100%}
+
+.err{background:#fef2f2;color:var(--danger);border:1px solid #fecaca;border-radius:var(--radius-sm);padding:12px 16px;font-size:.88rem;margin-bottom:14px;display:none}
+.success{text-align:center;padding:48px 20px;display:none}
+.success .si{font-size:3rem;display:block;margin-bottom:12px}
+.success h3{font-size:1.25rem;margin-bottom:8px}
+.success p{color:var(--text2);margin-bottom:22px}
+
+.acts{text-align:center;padding:6px 0 36px}
+.loader{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.footer{margin-top:auto;text-align:center;padding:18px 0;color:var(--text2);font-size:.82rem}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="container">
+      <h1>Анкета соискателя</h1>
+      <p class="sub">Работа на пункте выдачи заказов</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <form id="form" class="form" novalidate>
+      <div class="sec">
+        <div class="sec-hdr"><span class="step">1</span><h2>Личные данные</h2></div>
+        <div class="grid">
+          <div class="fg"><label for="fn">ФИО *</label><input type="text" id="fn" required placeholder="Иванов Иван Иванович"></div>
+          <div class="fg"><label for="bd">Дата рождения</label><input type="date" id="bd"></div>
+          <div class="fg"><label for="ph">Телефон *</label><input type="tel" id="ph" required placeholder="+7 (999) 123-45-67"></div>
+          <div class="fg"><label for="em">Email</label><input type="email" id="em" placeholder="ivan@example.com"></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-hdr"><span class="step">2</span><h2>О себе</h2></div>
+        <div class="fg" style="margin-bottom:12px"><label for="exp">Опыт работы</label><textarea id="exp" rows="3" placeholder="Где и кем работали ранее"></textarea></div>
+        <div class="fg" style="margin-bottom:12px"><label for="edu">Образование</label><input type="text" id="edu" placeholder="Среднее, средне-специальное, высшее"></div>
+        <div class="fg"><label for="ab">О себе</label><textarea id="ab" rows="4" placeholder="Почему хотите работать на ПВЗ"></textarea></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-hdr"><span class="step">3</span><h2>Селфи</h2></div>
+        <div class="selfie-wrap">
+          <div class="selfie-pv" id="spv"><span class="sp-icon">📸</span><p class="sp-hint">Нажмите для загрузки</p></div>
+          <input type="file" id="selfie" accept="image/*" capture="user">
+          <button type="button" class="btn btn-o" id="selfie-btn">Выбрать фото</button>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-hdr"><span class="step">4</span><h2>Маркетплейс и адрес</h2></div>
+        <div class="fg" style="margin-bottom:14px">
+          <label>Маркетплейс *</label>
+          <div class="mp-grid" id="mp-grid">
+            <label class="mp-card"><input type="radio" name="mp" value="ozon"><span>OZON</span></label>
+            <label class="mp-card"><input type="radio" name="mp" value="wb"><span>Wildberries</span></label>
+            <label class="mp-card"><input type="radio" name="mp" value="yandex_market"><span>Яндекс Маркет</span></label>
+          </div>
+        </div>
+        <div class="fg" style="margin-bottom:10px"><label for="addr1">Основной адрес ПВЗ *</label><select id="addr1" required><option value="">— выберите маркетплейс —</option></select></div>
+        <div class="fg" style="margin-bottom:10px"><label for="addr2">Резервный адрес 1</label><select id="addr2"><option value="">— не выбран —</option></select></div>
+        <div class="fg"><label for="addr3">Резервный адрес 2</label><select id="addr3"><option value="">— не выбран —</option></select></div>
+      </div>
+
+      <div class="err" id="err"></div>
+
+      <div class="success" id="success">
+        <span class="si">✅</span>
+        <h3>Анкета отправлена!</h3>
+        <p>Спасибо, ваша анкета принята. Мы свяжемся с вами.</p>
+        <button type="button" class="btn btn-p" id="again">Заполнить ещё раз</button>
+      </div>
+
+      <div class="acts"><button type="submit" class="btn btn-p btn-lg" id="submit-btn"><span id="btn-text">Отправить анкету</span><span class="loader" id="btn-loader"></span></button></div>
+    </form>
+  </main>
+
+  <footer class="footer"><div class="container"><p>Работа на ПВЗ © 2026</p></div></footer>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://jqseowqgwvyjbagzkwpm.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc2Vvd3Fnd3Z5amJhZ3prd3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTM1NDEsImV4cCI6MjA5ODEyOTU0MX0.6PA1jsxwR0wg9S6sH8QgcKQJ3qo5N4QjEPVTMNR7L2Y';
+const { createClient } = supabaseJs;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const ADDR = {
+  ozon:['ул. Тверская, 1, стр. 1','пр-т Мира, 12','Ленинградский пр-т, 47','ул. Арбат, 36','Кутузовский пр-т, 22','ул. Новый Арбат, 15'],
+  wb:['ул. Ленина, 25','пр-т Вернадского, 88','ул. Профсоюзная, 56','Шоссе Энтузиастов, 31','ул. Вавилова, 9','МКАД, 14-й км'],
+  yandex_market:['ул. Садовая-Кудринская, 15','пр-т Андропова, 22','ул. Большая Дмитровка, 20','Ленинградское шоссе, 16','ул. Таганская, 31','Рязанский пр-т, 2']
+};
+
+const form=document.getElementById('form'), selfieInp=document.getElementById('selfie'), spv=document.getElementById('spv'), selfieBtn=document.getElementById('selfie-btn');
+const mpRadios=document.querySelectorAll('input[name="mp"]'), a1=document.getElementById('addr1'), a2=document.getElementById('addr2'), a3=document.getElementById('addr3');
+const subBtn=document.getElementById('submit-btn'), btnText=document.getElementById('btn-text'), btnLoad=document.getElementById('btn-loader');
+const errEl=document.getElementById('err'), successEl=document.getElementById('success'), againBtn=document.getElementById('again');
+let selFile=null;
+
+function fillAddrs(mp){
+  const list=ADDR[mp]||[];
+  [a1,a2,a3].forEach(sel=>{
+    const cur=sel.value;
+    sel.innerHTML='<option value="">— выберите адрес —</option>';
+    list.forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o)});
+    if([...sel.options].some(o=>o.value===cur))sel.value=cur;else sel.value=''
+  })
+}
+
+mpRadios.forEach(r=>r.addEventListener('change',()=>{if(r.checked)fillAddrs(r.value)}));
+spv.addEventListener('click',()=>selfieInp.click());
+selfieBtn.addEventListener('click',()=>selfieInp.click());
+
+selfieInp.addEventListener('change',e=>{
+  const f=e.target.files[0];
+  if(!f)return;
+  if(!f.type.startsWith('image/'))return showErr('Выберите изображение');
+  if(f.size>5*1024*1024)return showErr('Файл больше 5 МБ');
+  selFile=f;
+  const r=new FileReader();
+  r.onload=ev=>{spv.innerHTML=`<img src="${ev.target.result}" alt="селфи">`;spv.classList.add('has')};
+  r.readAsDataURL(f);hideErr()
+});
+
+form.addEventListener('submit',async e=>{
+  e.preventDefault();hideErr();
+  const mp=document.querySelector('input[name="mp"]:checked');
+  if(!mp)return showErr('Выберите маркетплейс');
+  const data={
+    full_name:document.getElementById('fn').value.trim(),
+    phone:document.getElementById('ph').value.trim(),
+    email:document.getElementById('em').value.trim(),
+    birth_date:document.getElementById('bd').value||null,
+    experience:document.getElementById('exp').value.trim(),
+    education:document.getElementById('edu').value.trim(),
+    about:document.getElementById('ab').value.trim(),
+    marketplace:mp.value,
+    primary_address:a1.value,
+    backup_address_1:a2.value||null,
+    backup_address_2:a3.value||null
+  };
+  if(!data.full_name)return showErr('Укажите ФИО');
+  if(!data.phone)return showErr('Укажите телефон');
+  if(!data.primary_address)return showErr('Выберите основной адрес');
+
+  setLoad(true);
+  try{
+    let selfieUrl=null;
+    if(selFile){
+      const ext=selFile.name.split('.').pop();
+      const path=`${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const {error:upErr}=await sb.storage.from('selfies').upload(path,selFile,{contentType:selFile.type});
+      if(upErr)throw upErr;
+      const {data:{publicUrl}}=sb.storage.from('selfies').getPublicUrl(path);
+      selfieUrl=publicUrl
+    }
+    const {error}=await sb.from('applications').insert({...data,selfie_url:selfieUrl,status:'new'});
+    if(error)throw error;
+    form.hidden=true;successEl.style.display='block';errEl.style.display='none'
+  }catch(e){
+    console.error(e);showErr(e.message||'Ошибка отправки')
+  }finally{setLoad(false)}
+});
+
+againBtn.addEventListener('click',()=>{
+  form.reset();form.hidden=false;successEl.style.display='none';selFile=null;
+  spv.innerHTML='<span class="sp-icon">📸</span><p class="sp-hint">Нажмите для загрузки</p>';
+  spv.classList.remove('has');
+  [a1,a2,a3].forEach(s=>{s.innerHTML='<option value="">— сначала выберите маркетплейс —</option>'});
+  hideErr();window.scrollTo({top:0,behavior:'smooth'})
+});
+
+function showErr(m){errEl.textContent=m;errEl.style.display='block'}
+function hideErr(){errEl.style.display='none';errEl.textContent=''}
+function setLoad(l){subBtn.disabled=l;btnText.style.display=l?'none':'inline';btnLoad.style.display=l?'inline-flex':'none'}
+</script>
+</body>
+</html>
