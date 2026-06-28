@@ -2,14 +2,14 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>Анкета соискателя — ПВЗ</title>
 <style>
 :root{--ozon:#005BFF;--wb:#CB11AB;--ym:#FFCC00;--ym-text:#333;--bg:#f4f6f9;--surface:#fff;--text:#1a1a2e;--text2:#5a6a7a;--border:#dce3ed;--radius:14px;--radius-sm:8px;--shadow:0 2px 8px rgba(0,0,0,.06);--shadow-lg:0 8px 30px rgba(0,0,0,.1);--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;width:100%}
 .app{min-height:100vh;display:flex;flex-direction:column}
-.container{max-width:720px;margin:0 auto;padding:0 20px;width:100%}
+.container{max-width:720px;margin:0 auto;padding:0 20px;width:100%;min-width:0}
 
 /* Header — градиент Ozon → WB → YM */
 .header{
@@ -43,8 +43,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 input,textarea,select{
   width:100%;padding:11px 14px;
   border:1.5px solid var(--border);border-radius:var(--radius-sm);
-  font-size:.92rem;font-family:inherit;background:var(--surface);color:var(--text);
-  transition:border-color .25s,box-shadow .25s;outline:none
+  font-size:16px;font-family:inherit;background:var(--surface);color:var(--text);
+  transition:border-color .25s,box-shadow .25s;outline:none;
+  -webkit-text-size-adjust:100%;
 }
 input:focus,textarea:focus,select:focus{
   border-color:var(--ozon);
@@ -96,7 +97,7 @@ textarea{resize:vertical;min-height:70px}
   .sec-hdr h2{font-size:1rem}
   .step{width:26px;height:26px;font-size:.75rem}
   .grid{gap:10px}
-  input,textarea,select{padding:10px 12px;font-size:.88rem}
+  input,textarea,select{padding:10px 12px;font-size:16px}
   .btn-lg{padding:13px 20px;font-size:.92rem;width:100%}
   .err{font-size:.82rem;padding:10px 14px}
   .success{padding:32px 12px}
@@ -267,15 +268,95 @@ textarea{resize:vertical;min-height:70px}
 }
 .d-chip:hover{border-color:var(--ozon);color:var(--ozon);background:#EEF4FF}
 .d-chip.selected{border-color:var(--ozon);background:var(--ozon);color:#fff}
+
+/* ─── Тёмная тема ─── */
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#0f1117;
+    --surface:#1c1f2b;
+    --text:#e8eaf0;
+    --text2:#8b95a8;
+    --border:#2e3347;
+    --shadow:0 2px 8px rgba(0,0,0,.3);
+    --shadow-lg:0 8px 30px rgba(0,0,0,.4);
+  }
+}
+[data-theme="dark"]{
+  --bg:#0f1117;
+  --surface:#1c1f2b;
+  --text:#e8eaf0;
+  --text2:#8b95a8;
+  --border:#2e3347;
+  --shadow:0 2px 8px rgba(0,0,0,.3);
+  --shadow-lg:0 8px 30px rgba(0,0,0,.4);
+}
+[data-theme="light"]{
+  --bg:#f4f6f9;
+  --surface:#fff;
+  --text:#1a1a2e;
+  --text2:#5a6a7a;
+  --border:#dce3ed;
+  --shadow:0 2px 8px rgba(0,0,0,.06);
+  --shadow-lg:0 8px 30px rgba(0,0,0,.1);
+}
+
+/* Тёмная тема — уточнения */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select,
+@media(prefers-color-scheme:dark){
+  input,textarea,select{
+    background:var(--surface);
+    color:var(--text);
+    color-scheme:dark;
+  }
+}
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select{
+  background:var(--surface);color:var(--text);color-scheme:dark;
+}
+[data-theme="dark"] .err{background:#2d1515;border-color:#5c2020;color:#ff8a8a}
+[data-theme="dark"] .consent-box{background:#1a1f2e;border-color:#2e3a5c}
+[data-theme="dark"] .d-modal-box{background:var(--surface)}
+[data-theme="dark"] .pvz-exp-chip{background:var(--surface);color:var(--text2);border-color:var(--border)}
+[data-theme="dark"] .d-chip{background:var(--surface);color:var(--text);border-color:var(--border)}
+[data-theme="dark"] .district-field{background:var(--surface);color:var(--text2);border-color:var(--border)}
+[data-theme="dark"] .district-field.filled{color:var(--text)}
+[data-theme="dark"] select option{background:#1c1f2b}
+
+@media(prefers-color-scheme:dark){
+  input,textarea,select{color-scheme:dark}
+  .err{background:#2d1515;border-color:#5c2020;color:#ff8a8a}
+  .consent-box{background:#1a1f2e;border-color:#2e3a5c}
+  .pvz-exp-chip{background:var(--surface);color:var(--text2)}
+  .d-chip{background:var(--surface);color:var(--text)}
+  .district-field{background:var(--surface);color:var(--text2)}
+  .district-field.filled{color:var(--text)}
+  select option{background:#1c1f2b}
+}
+
+/* Кнопка переключения темы */
+.theme-toggle{
+  background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25);
+  border-radius:100px;padding:5px 12px;
+  color:#fff;font-size:.8rem;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;gap:5px;
+  transition:all .2s;white-space:nowrap;
+}
+.theme-toggle:hover{background:rgba(255,255,255,.25)}
 </style>
 </head>
 <body>
 <div class="app">
   <header class="header">
     <div class="container">
-      <div class="header-inner">
-        <h1>Анкета соискателя</h1>
-        <p class="sub">Работа на пункте выдачи заказов</p>
+      <div class="header-inner" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div>
+          <h1>Анкета соискателя</h1>
+          <p class="sub">Работа на пункте выдачи заказов</p>
+        </div>
+        <button class="theme-toggle" id="theme-toggle">☀️ Тема</button>
       </div>
       <div class="mp-badges">
         <span class="mp-badge mp-ozon-b">OZON</span>
@@ -318,7 +399,7 @@ textarea{resize:vertical;min-height:70px}
             <div class="pvz-exp-chip" data-group="pvz_exp" data-val="sima" data-dbval="sima_land">Sima Land</div>
           </div>
         </div>
-        <div class="fg" style="margin-bottom:16px"><label for="exp">Опыт работы <span style="color:var(--ozon)">*</span></label><textarea id="exp" rows="3" placeholder="Где и кем работали ранее" required></textarea></div>
+        <div class="fg" style="margin-bottom:16px"><label for="exp">Опыт работы</label><textarea id="exp" rows="3" placeholder="Где и кем работали ранее"></textarea></div>
         <div class="fg" style="margin-bottom:16px"><label for="edu">Образование <span style="color:var(--ozon)">*</span></label>
           <div class="district-field" id="edu-field" onclick="openModal('edu')">
             <span id="edu-display">Выберите образование</span>
@@ -332,9 +413,11 @@ textarea{resize:vertical;min-height:70px}
       <div class="sec">
         <div class="sec-hdr"><span class="step">3</span><h2>Фото <span style="color:var(--ozon);font-size:.9rem">*</span></h2></div>
         <div class="selfie-wrap">
-          <input type="file" id="selfie" accept="image/*" capture="user" style="display:none">
-          <button type="button" class="btn btn-p" id="selfie-btn">📎 Прикрепить фото</button>
-          <span id="selfie-name" style="font-size:.82rem;color:var(--text2);display:none"></span>
+          <input type="file" id="selfie-gallery" accept="image/*" style="display:none">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+            <button type="button" class="btn btn-p" id="selfie-btn">📎 Прикрепить фото</button>
+          </div>
+          <span id="selfie-name" style="font-size:.82rem;color:var(--text2);display:none;text-align:center"></span>
         </div>
       </div>
 
@@ -423,7 +506,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 let sb;
 try{sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)}catch(e){console.warn('Supabase init error',e)}
 
-const form=document.getElementById('form'), selfieInp=document.getElementById('selfie'), selfieBtn=document.getElementById('selfie-btn');
+const form=document.getElementById('form'), selfieBtn=document.getElementById('selfie-btn');
+const selfieInp=document.getElementById('selfie-gallery');
 const subBtn=document.getElementById('submit-btn'), btnText=document.getElementById('btn-text'), btnLoad=document.getElementById('btn-loader');
 const errEl=document.getElementById('err'), successEl=document.getElementById('success'), againBtn=document.getElementById('again');
 const phInp=document.getElementById('ph');
@@ -435,17 +519,19 @@ let selFile=null;
 
 
 // --- Чипы опыта ПВЗ ---
-var selectedMp='';
+var selectedMp=new Set();
 document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(chip=>{
   chip.addEventListener('click',function(){
-    selectedMp=chip.dataset.val;
-    document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(ch=>{
-      ch.style.borderColor='';ch.style.background='';ch.style.color='';
-    });
     var val=chip.dataset.val;
-    if(val==='ozon'){chip.style.borderColor='var(--ozon)';chip.style.background='#E8F0FF';chip.style.color='var(--ozon)';}
-    else if(val==='wb'){chip.style.borderColor='var(--wb)';chip.style.background='#FCE8F7';chip.style.color='var(--wb)';}
-    else if(val==='ym'){chip.style.borderColor='#b8960a';chip.style.background='#FFF9E0';chip.style.color='#8a6f00';}
+    if(selectedMp.has(val)){
+      selectedMp.delete(val);
+      chip.style.borderColor='';chip.style.background='';chip.style.color='';
+    } else {
+      selectedMp.add(val);
+      if(val==='ozon'){chip.style.borderColor='var(--ozon)';chip.style.background='#E8F0FF';chip.style.color='var(--ozon)';}
+      else if(val==='wb'){chip.style.borderColor='var(--wb)';chip.style.background='#FCE8F7';chip.style.color='var(--wb)';}
+      else if(val==='ym'){chip.style.borderColor='#b8960a';chip.style.background='#FFF9E0';chip.style.color='#8a6f00';}
+    }
   });
 });
 
@@ -518,8 +604,7 @@ phInp.addEventListener('input',function(){
 // --- Селфи ---
 selfieBtn.addEventListener('click',()=>selfieInp.click());
 
-selfieInp.addEventListener('change',e=>{
-  const f=e.target.files[0];
+function handleFileSelect(f){
   if(!f)return;
   if(!f.type.startsWith('image/'))return showErr('Выберите изображение');
   if(f.size>5*1024*1024)return showErr('Файл больше 5 МБ');
@@ -527,7 +612,9 @@ selfieInp.addEventListener('change',e=>{
   const nm=document.getElementById('selfie-name');
   nm.textContent='✅ '+f.name;nm.style.display='inline';
   hideErr();
-});
+}
+
+selfieInp.addEventListener('change',e=>handleFileSelect(e.target.files[0]));
 
 
 
@@ -542,7 +629,7 @@ form.addEventListener('submit',async e=>{
     email:document.getElementById('em').value.trim(),
     birth_date:document.getElementById('bd').value||null,
     experience:document.getElementById('exp').value.trim(),
-    marketplace:selectedMp||null,
+    marketplace:selectedMp.size?[...selectedMp].join(', '):null,
     employment_type:selectedEmployment||null,
     pvz_experience:getSelectedPvzExp(),
     education:document.getElementById('edu').value.trim(),
@@ -553,10 +640,9 @@ form.addEventListener('submit',async e=>{
   if(!document.getElementById('bd').value)return showErr('Укажите дату рождения');
   if(pdigs.length<7)return showErr('Введите номер телефона');
   if(!data.email)return showErr('Укажите Telegram');
-  if(!selectedMp)return showErr('Выберите маркетплейс');
+  if(!selectedMp.size)return showErr('Выберите маркетплейс');
   if(!selectedEmployment)return showErr('Выберите тип занятости');
   if(!selectedPvzExp.size)return showErr('Укажите опыт работы на ПВЗ');
-  if(!data.experience)return showErr('Заполните поле «Опыт работы»');
   if(!data.education)return showErr('Выберите образование');
   if(!data.about)return showErr('Заполните поле «О себе»');
   if(!selDistrict)return showErr('Выберите район работы');
@@ -570,12 +656,14 @@ form.addEventListener('submit',async e=>{
   try{
     let selfieUrl=null;
     if(selFile){
-      const ext=selFile.name.split('.').pop();
-      const path=`${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-      const {error:upErr}=await sb.storage.from('selfies').upload(path,selFile,{contentType:selFile.type});
-      if(upErr)throw upErr;
-      const {data:{publicUrl}}=sb.storage.from('selfies').getPublicUrl(path);
-      selfieUrl=publicUrl
+      const fd=new FormData();
+      fd.append('file',selFile);
+      fd.append('upload_preset','Anketa');
+      const clRes=await fetch('https://api.cloudinary.com/v1_1/dwhtxecld/image/upload',{method:'POST',body:fd});
+      if(!clRes.ok)throw new Error('Ошибка загрузки фото на сервер: '+clRes.status);
+      const clData=await clRes.json();
+      if(clData.error)throw new Error('Cloudinary: '+clData.error.message);
+      selfieUrl=clData.secure_url;
     }
     const {error}=await sb.from('applications').insert({...data,selfie_url:selfieUrl,status:'new'});
     if(error)throw error;
@@ -598,7 +686,7 @@ againBtn.addEventListener('click',()=>{
   document.querySelectorAll('.pvz-card').forEach(c=>{c.querySelector('input').checked=false;c.classList.remove('checked-ozon','checked-wb','checked-ym')});
   selectedEmployment='';document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(ch=>{ch.style.borderColor='';ch.style.background='';ch.style.color=''});
   selectedPvzExp.clear();document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(ch=>{ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima')});
-  selectedMp='';document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(ch=>{ch.style.borderColor='';ch.style.background='';ch.style.color='';});
+  selectedMp=new Set();document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(ch=>{ch.style.borderColor='';ch.style.background='';ch.style.color='';});
   selEdu='';document.getElementById('edu-display').textContent='Выберите образование';document.getElementById('edu-field').classList.remove('filled');document.getElementById('edu').value='';
   document.getElementById('consent').checked=false;
   document.getElementById('consent2').checked=false;
@@ -722,6 +810,47 @@ function updateWorkAddr() {
 document.addEventListener('keydown', function(e){
   if (e.key === 'Escape') closeModal();
 });
+
+// --- Тема ---
+(function(){
+  var root = document.documentElement;
+  var stored = localStorage.getItem('theme');
+  var sysDark = window.matchMedia('(prefers-color-scheme:dark)');
+
+  function apply(theme){
+    var btn = document.getElementById('theme-toggle');
+    if(theme === 'dark'){
+      root.setAttribute('data-theme','dark');
+      if(btn) btn.textContent = '☀️';
+    } else {
+      root.setAttribute('data-theme','light');
+      if(btn) btn.textContent = '🌙';
+    }
+  }
+
+  // Применяем сразу при загрузке (без кнопки — она ещё не в DOM)
+  var current = stored || (sysDark.matches ? 'dark' : 'light');
+  root.setAttribute('data-theme', current);
+
+  // После загрузки DOM — обновляем иконку и вешаем обработчик
+  document.addEventListener('DOMContentLoaded', function(){
+    apply(root.getAttribute('data-theme'));
+    var btn = document.getElementById('theme-toggle');
+    if(btn){
+      btn.addEventListener('click', function(){
+        var now = root.getAttribute('data-theme');
+        var next = now === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('theme', next);
+        apply(next);
+      });
+    }
+  });
+
+  // Следим за системной темой
+  sysDark.addEventListener('change', function(e){
+    if(!localStorage.getItem('theme')) apply(e.matches ? 'dark' : 'light');
+  });
+})();
 
 function showErr(m){errEl.textContent=m;errEl.style.display='block'}
 function hideErr(){errEl.style.display='none';errEl.textContent=''}
