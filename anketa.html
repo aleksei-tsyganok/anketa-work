@@ -354,6 +354,8 @@ input[type="date"]{
   display:block;
   -webkit-appearance:none;
   appearance:none;
+  min-height:46px;
+  line-height:1.5;
 }
 </style>
 </head>
@@ -382,7 +384,7 @@ input[type="date"]{
         <div class="sec-hdr"><span class="step">1</span><h2>Личные данные</h2></div>
         <div class="grid">
           <div class="fg"><label for="fn">ФИО *</label><input type="text" id="fn" required placeholder="Иванов Иван Иванович"></div>
-          <div class="fg"><label for="bd">Дата рождения <span style="color:var(--ozon)">*</span></label><input type="date" id="bd" required></div>
+          <div class="fg"><label for="bd">Дата рождения <span style="color:var(--ozon)">*</span></label><input type="date" id="bd" required value="2000-01-01" min="1950-01-01" max="2010-12-31"></div>
           <div class="fg"><label for="ph">Телефон *</label><input type="tel" id="ph" required placeholder="+7 (999) 123-45-67" inputmode="numeric" value="+7"></div>
           <div class="fg"><label for="em">Telegram <span style="color:var(--ozon)">*</span></label><input type="text" id="em" placeholder="@username или t.me/username" required></div>
         </div>
@@ -448,13 +450,7 @@ input[type="date"]{
             <span class="district-field-arrow">▼</span>
           </div>
         </div>
-        <div class="fg" id="micro-wrap" style="display:none">
-          <label>Микрорайон <span style="color:var(--ozon)">*</span></label>
-          <div class="district-field" id="micro-field" onclick="openModal('micro')">
-            <span id="micro-display">Выберите микрорайон</span>
-            <span class="district-field-arrow">▼</span>
-          </div>
-        </div>
+
         <input type="hidden" id="work-addr">
         <div class="fg" style="margin-top:12px">
           <label for="exact-addr" style="color:var(--text2)">По желанию напишите точный адрес</label>
@@ -658,7 +654,6 @@ form.addEventListener('submit',async e=>{
   if(!data.education)return showErr('Выберите образование');
   if(!data.about)return showErr('Заполните поле «О себе»');
   if(!selDistrict)return showErr('Выберите район работы');
-  if(!selMicro)return showErr('Выберите микрорайон');
   if(!selFile)return showErr('Прикрепите фото');
   if(!document.getElementById('consent').checked)return showErr('Необходимо дать согласие на обработку персональных данных');
   if(!document.getElementById('consent2').checked)return showErr('Подтвердите достоверность указанных сведений');
@@ -688,14 +683,11 @@ form.addEventListener('submit',async e=>{
 againBtn.addEventListener('click',()=>{
   form.reset();form.hidden=false;successEl.style.display='none';selFile=null;
   const nm=document.getElementById('selfie-name');if(nm)nm.style.display='none';
-  selDistrict='';selMicro='';
+  selDistrict='';
   document.getElementById('work-addr').value='';
   document.getElementById('exact-addr').value='';
   document.getElementById('district-display').textContent='Выберите район';
-  document.getElementById('micro-display').textContent='Выберите микрорайон';
   document.getElementById('district-field').classList.remove('filled');
-  document.getElementById('micro-field').classList.remove('filled');
-  document.getElementById('micro-wrap').style.display='none';
   document.querySelectorAll('.pvz-card').forEach(c=>{c.querySelector('input').checked=false;c.classList.remove('checked-ozon','checked-wb','checked-ym')});
   selectedEmployment='';document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(ch=>{ch.style.borderColor='';ch.style.background='';ch.style.color=''});
   selectedPvzExp.clear();document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(ch=>{ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima')});
@@ -706,7 +698,7 @@ againBtn.addEventListener('click',()=>{
   hideErr();window.scrollTo({top:0,behavior:'smooth'})
 });
 
-// --- Выбор района и микрорайона ---
+// --- Выбор района ---
 var DISTRICTS = {
   'Советский район':    ['Взлётка','Северный','Зелёная Роща','Солнечный','Иннокентьевский','Преображенский'],
   'Центральный район':  ['Исторический центр','Покровский','Яблони','Покровка','Николаевка'],
@@ -729,7 +721,7 @@ var EDU_OPTIONS = [
 function openModal(mode) {
   modalMode = mode;
   document.getElementById('district-search').value = '';
-  var title = mode === 'district' ? 'Выберите район' : mode === 'micro' ? 'Выберите микрорайон' : 'Выберите образование';
+  var title = mode === 'district' ? 'Выберите район' : 'Выберите образование';
   document.getElementById('modal-title').textContent = title;
   renderItems('');
   document.getElementById('district-modal').classList.add('open');
@@ -767,16 +759,6 @@ function renderItems(filter) {
       el.addEventListener('click', function(){ pickEdu(o.val, o.label); });
       wrap.appendChild(el);
     });
-  } else {
-    var items = selDistrict ? DISTRICTS[selDistrict] : [];
-    items.forEach(function(m){
-      if (f && !m.toLowerCase().includes(f)) return;
-      var el = document.createElement('div');
-      el.className = 'd-chip' + (m === selMicro ? ' selected' : '');
-      el.textContent = m;
-      el.addEventListener('click', function(){ pickMicro(m); });
-      wrap.appendChild(el);
-    });
   }
 
   box.innerHTML = '';
@@ -787,22 +769,8 @@ function filterItems(val) { renderItems(val); }
 
 function pickDistrict(name) {
   selDistrict = name;
-  selMicro = '';
   document.getElementById('district-display').textContent = name;
   document.getElementById('district-field').classList.add('filled');
-  document.getElementById('micro-display').textContent = 'Выберите микрорайон';
-  document.getElementById('micro-field').classList.remove('filled');
-  document.getElementById('micro-wrap').style.display = 'block';
-  updateWorkAddr();
-  closeModal();
-  // Сразу открыть выбор микрорайона
-  setTimeout(function(){ openModal('micro'); }, 220);
-}
-
-function pickMicro(name) {
-  selMicro = name;
-  document.getElementById('micro-display').textContent = name;
-  document.getElementById('micro-field').classList.add('filled');
   updateWorkAddr();
   closeModal();
 }
@@ -816,7 +784,7 @@ function pickEdu(val, label) {
 }
 
 function updateWorkAddr() {
-  var val = selDistrict + (selMicro ? ', ' + selMicro : '');
+  var val = selDistrict;
   document.getElementById('work-addr').value = val;
 }
 
