@@ -80,6 +80,8 @@ tr:hover td{background:#f8fafc}
 .thumb{width:36px;height:36px;border-radius:50%;object-fit:cover;cursor:pointer;border:2px solid var(--border);transition:border-color .2s}
 .thumb:hover{border-color:var(--ozon)}
 .thumb-ph{width:36px;height:36px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:.85rem;flex-shrink:0}
+.phone-icon{text-decoration:none;flex-shrink:0;font-size:1rem;transition:transform .15s;line-height:1}
+.phone-icon:hover{transform:scale(1.2)}
 
 /* MODAL */
 .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
@@ -224,7 +226,7 @@ tr:hover td{background:#f8fafc}
 
     <div class="tw">
       <div class="loading" id="loading">Загрузка...</div>
-      <table><thead><tr><th>Дата</th><th>ФИО</th><th>Телефон</th><th>Маркетплейс</th><th>Адрес</th><th>Статус</th><th></th></tr></thead><tbody id="tbody"></tbody></table>
+      <table><thead><tr><th>Дата</th><th>ФИО</th><th>Возраст</th><th>Маркетплейс</th><th>Район</th><th>Статус</th><th></th></tr></thead><tbody id="tbody"></tbody></table>
     </div>
   </main>
 </div>
@@ -351,10 +353,10 @@ function render(){
   if(!apps.length){tbody.innerHTML='<tr><td colspan="7" class="empty">Нет данных</td></tr>';let cl=document.querySelector('.card-list');if(cl)cl.innerHTML='<div class="card" style="text-align:center;color:var(--text2);padding:20px">Нет данных</div>';return}
   tbody.innerHTML=apps.map(a=>`<tr>
     <td>${dmy(a.created_at)}</td>
-    <td><div style="display:flex;align-items:center;gap:7px">${a.selfie_url?`<img src="${a.selfie_url}" class="thumb" onclick="window.open('${a.selfie_url}')">`:'<div class="thumb-ph">?</div>'}<strong>${esc(a.full_name)}</strong></div></td>
-    <td>${esc(a.phone)}</td>
+    <td><div style="display:flex;align-items:center;gap:7px">${a.selfie_url?`<img src="${a.selfie_url}" class="thumb" onclick="window.open('${a.selfie_url}')">`:'<div class="thumb-ph">?</div>'}<strong>${esc(a.full_name)}</strong>${a.phone?`<a href="tel:${esc(a.phone)}" class="phone-icon" title="${esc(a.phone)}">📞</a>`:''}</div></td>
+    <td>${age(a.birth_date)}</td>
     <td>${MP[a.marketplace]||a.marketplace}</td>
-    <td>${esc(a.primary_address)}</td>
+    <td>${esc(a.work_location_addr||a.primary_address||'—')}</td>
     <td><span class="badge ${a.status}">${ST[a.status]||a.status}</span></td>
     <td><button class="btn btn-o btn-sm view" data-id="${a.id}">Открыть</button></td>
   </tr>`).join('');
@@ -366,11 +368,11 @@ function render(){
       <div class="card-user">${a.selfie_url?`<img src="${a.selfie_url}" class="thumb">`:'<div class="thumb-ph">?</div>'}<span class="name">${esc(a.full_name)}</span></div>
       <span class="badge ${a.status}">${ST[a.status]||a.status}</span>
     </div>
-    <div class="card-line"><span class="card-label">Тел.</span><span class="card-val">${esc(a.phone)}</span></div>
+    <div class="card-line"><span class="card-label">Возраст</span><span class="card-val">${age(a.birth_date)}</span></div>
     <div class="card-line"><span class="card-label">Маркет</span><span class="card-val">${MP[a.marketplace]||a.marketplace}</span></div>
-    <div class="card-line"><span class="card-label">Адрес</span><span class="card-val">${esc(a.primary_address)}</span></div>
+    <div class="card-line"><span class="card-label">Район</span><span class="card-val">${esc(a.work_location_addr||a.primary_address||'—')}</span></div>
     <div class="card-line"><span class="card-label">Дата</span><span class="card-val">${dmy(a.created_at)}</span></div>
-    <div class="card-acts"><button class="btn btn-o btn-sm view" data-id="${a.id}">Открыть</button></div>
+    <div class="card-acts"><a href="tel:${esc(a.phone)}" class="btn btn-p btn-sm" style="text-decoration:none">📞 Позвонить</a><button class="btn btn-o btn-sm view" data-id="${a.id}">Открыть</button></div>
   </div>`).join('');
   cl.querySelectorAll('.view').forEach(b=>b.addEventListener('click',()=>open(b.dataset.id)))
 }
@@ -472,6 +474,7 @@ pwForm.addEventListener('submit',async e=>{
 });
 
 function dmy(s){if(!s)return'—';const d=new Date(s);return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}
+function age(bd){if(!bd)return'—';const b=new Date(bd),t=new Date();let a=t.getFullYear()-b.getFullYear();const m=t.getMonth()-b.getMonth();if(m<0||(m===0&&t.getDate()<b.getDate()))a--;return a+' г'}
 function esc(s){if(!s)return'';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
 init()
