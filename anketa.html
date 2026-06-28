@@ -133,23 +133,23 @@ textarea{resize:vertical;min-height:70px}
   padding:8px 16px;border-radius:100px;
   border:1.5px solid var(--border);background:var(--surface);
   font-size:.84rem;font-weight:600;color:var(--text2);
-  cursor:pointer;transition:all .18s;user-select:none;
+  cursor:pointer;transition:all .18s;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
 }
 .pvz-exp-chip input{display:none}
 .pvz-exp-chip:hover{border-color:#aaa}
-.pvz-exp-chip.checked-no{border-color:#888;background:#f0f0f0;color:var(--text)}
-.pvz-exp-chip.checked-ozon{border-color:var(--ozon);background:#E8F0FF;color:var(--ozon)}
-.pvz-exp-chip.checked-wb{border-color:var(--wb);background:#FCE8F7;color:var(--wb)}
-.pvz-exp-chip.checked-ym{border-color:#b8960a;background:#FFF9E0;color:#8a6f00}
-.pvz-exp-chip.checked-dpd{border-color:#C00;background:#FFF0F0;color:#C00}
-.pvz-exp-chip.checked-sima{border-color:#111;background:#f0f0f0;color:#111}
+.pvz-exp-chip.checked-no{border-color:#888!important;background:#f0f0f0!important;color:#1a1a2e!important}
+.pvz-exp-chip.checked-ozon{border-color:#005BFF!important;background:#E8F0FF!important;color:#005BFF!important}
+.pvz-exp-chip.checked-wb{border-color:#CB11AB!important;background:#FCE8F7!important;color:#CB11AB!important}
+.pvz-exp-chip.checked-ym{border-color:#b8960a!important;background:#FFF9E0!important;color:#8a6f00!important}
+.pvz-exp-chip.checked-dpd{border-color:#C00!important;background:#FFF0F0!important;color:#C00!important}
+.pvz-exp-chip.checked-sima{border-color:#111!important;background:#f0f0f0!important;color:#111!important}
 
 /* ─── Карточки ПВЗ для работы ─── */
 .pvz-card{
   display:flex;align-items:center;gap:14px;
   padding:14px 16px;border-radius:var(--radius-sm);
   border:1.5px solid var(--border);background:var(--surface);
-  cursor:pointer;transition:all .18s;user-select:none;
+  cursor:pointer;transition:all .18s;user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
 }
 .pvz-card:hover{border-color:#bbb;background:#fafafa}
 .pvz-card input[type=checkbox]{display:none}
@@ -383,20 +383,20 @@ textarea{resize:vertical;min-height:70px}
         <div class="fg" style="margin-bottom:16px">
           <span class="pvz-exp-label">Тип занятости <span style="color:var(--ozon)">*</span></span>
           <div class="pvz-exp-row">
-            <div class="pvz-exp-chip" data-group="employment" data-val="full">Полная занятость</div>
-            <div class="pvz-exp-chip" data-group="employment" data-val="short">На короткий период</div>
-            <div class="pvz-exp-chip" data-group="employment" data-val="sub">На подмены</div>
+            <div class="pvz-exp-chip" data-group="employment" data-val="full" onclick="empClick(this)">Полная занятость</div>
+            <div class="pvz-exp-chip" data-group="employment" data-val="short" onclick="empClick(this)">На короткий период</div>
+            <div class="pvz-exp-chip" data-group="employment" data-val="sub" onclick="empClick(this)">На подмены</div>
           </div>
         </div>
         <div class="fg" style="margin-bottom:16px">
           <span class="pvz-exp-label">Есть ли опыт работы на ПВЗ? <span style="color:var(--ozon)">*</span></span>
           <div class="pvz-exp-row" id="pvz-exp-row">
-            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="нет" data-dbval="нет">Нет опыта</div>
-            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="ozon" data-dbval="ozon">OZON</div>
-            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="wb" data-dbval="wildberries">Wildberries</div>
-            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="ym" data-dbval="yandex_market">Яндекс Маркет</div>
-            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="dpd" data-dbval="dpd">DPD</div>
-            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="sima" data-dbval="sima_land">Sima Land</div>
+            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="нет" data-dbval="нет" onclick="pvzExpClick(this)">Нет опыта</div>
+            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="ozon" data-dbval="ozon" onclick="pvzExpClick(this)">OZON</div>
+            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="wb" data-dbval="wildberries" onclick="pvzExpClick(this)">Wildberries</div>
+            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="ym" data-dbval="yandex_market" onclick="pvzExpClick(this)">Яндекс Маркет</div>
+            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="dpd" data-dbval="dpd" onclick="pvzExpClick(this)">DPD</div>
+            <div class="pvz-exp-chip" data-group="pvz_exp" data-val="sima" data-dbval="sima_land" onclick="pvzExpClick(this)">Sima Land</div>
           </div>
         </div>
         <div class="fg" style="margin-bottom:16px"><label for="exp">Опыт работы</label><textarea id="exp" rows="3" placeholder="Где и кем работали ранее"></textarea></div>
@@ -426,9 +426,9 @@ textarea{resize:vertical;min-height:70px}
         <div class="fg" style="margin-bottom:16px">
           <span class="pvz-exp-label">Выберите маркетплейс <span style="color:var(--ozon)">*</span></span>
           <div class="pvz-exp-row">
-            <div class="pvz-exp-chip" data-group="mp" data-val="ozon">OZON</div>
-            <div class="pvz-exp-chip" data-group="mp" data-val="wb">Wildberries</div>
-            <div class="pvz-exp-chip" data-group="mp" data-val="ym">Яндекс Маркет</div>
+            <div class="pvz-exp-chip" data-group="mp" data-val="ozon" onclick="mpClick(this)">OZON</div>
+            <div class="pvz-exp-chip" data-group="mp" data-val="wb" onclick="mpClick(this)">Wildberries</div>
+            <div class="pvz-exp-chip" data-group="mp" data-val="ym" onclick="mpClick(this)">Яндекс Маркет</div>
           </div>
         </div>
         <div class="fg" style="margin-bottom:12px">
@@ -505,17 +505,20 @@ textarea{resize:vertical;min-height:70px}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
-const SUPABASE_URL = 'https://jqseowqgwvyjbagzkwpm.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc2Vvd3Fnd3Z5amJhZ3prd3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTM1NDEsImV4cCI6MjA5ODEyOTU0MX0.6PA1jsxwR0wg9S6sH8QgcKQJ3qo5N4QjEPVTMNR7L2Y';
-let sb;
-try{sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)}catch(e){console.warn('Supabase init error',e)}
-
-const form=document.getElementById('form'), selfieBtn=document.getElementById('selfie-btn');
-const selfieInp=document.getElementById('selfie-gallery');
-const subBtn=document.getElementById('submit-btn'), btnText=document.getElementById('btn-text'), btnLoad=document.getElementById('btn-loader');
-const errEl=document.getElementById('err'), successEl=document.getElementById('success'), againBtn=document.getElementById('again');
-const phInp=document.getElementById('ph');
-let selFile=null;
+var sb = null;
+try{
+  var SUPABASE_URL = 'https://jqseowqgwvyjbagzkwpm.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxc2Vvd3Fnd3Z5amJhZ3prd3BtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1NTM1NDEsImV4cCI6MjA5ODEyOTU0MX0.6PA1jsxwR0wg9S6sH8QgcKQJ3qo5N4QjEPVTMNR7L2Y';
+  if(typeof supabase !== 'undefined') sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+}catch(e){console.warn('Supabase init error',e)}
+</script>
+<script>
+var form=document.getElementById('form'), selfieBtn=document.getElementById('selfie-btn');
+var selfieInp=document.getElementById('selfie-gallery');
+var subBtn=document.getElementById('submit-btn'), btnText=document.getElementById('btn-text'), btnLoad=document.getElementById('btn-loader');
+var errEl=document.getElementById('err'), successEl=document.getElementById('success'), againBtn=document.getElementById('again');
+var phInp=document.getElementById('ph');
+var selFile=null;
 
 
 
@@ -524,55 +527,49 @@ let selFile=null;
 
 // --- Чипы опыта ПВЗ ---
 var selectedMp=new Set();
-document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(chip=>{
-  chip.addEventListener('click',function(){
-    var val=chip.dataset.val;
-    if(selectedMp.has(val)){
-      selectedMp.delete(val);
-      chip.style.borderColor='';chip.style.background='';chip.style.color='';
-    } else {
-      selectedMp.add(val);
-      if(val==='ozon'){chip.style.borderColor='var(--ozon)';chip.style.background='#E8F0FF';chip.style.color='var(--ozon)';}
-      else if(val==='wb'){chip.style.borderColor='var(--wb)';chip.style.background='#FCE8F7';chip.style.color='var(--wb)';}
-      else if(val==='ym'){chip.style.borderColor='#b8960a';chip.style.background='#FFF9E0';chip.style.color='#8a6f00';}
-    }
-  });
-});
+function mpClick(chip){
+  var val=chip.dataset.val;
+  if(selectedMp.has(val)){
+    selectedMp.delete(val);
+    chip.style.removeProperty('border-color');chip.style.removeProperty('background');chip.style.removeProperty('color');
+  } else {
+    selectedMp.add(val);
+    if(val==='ozon'){chip.style.setProperty('border-color','#005BFF','important');chip.style.setProperty('background','#E8F0FF','important');chip.style.setProperty('color','#005BFF','important');}
+    else if(val==='wb'){chip.style.setProperty('border-color','#CB11AB','important');chip.style.setProperty('background','#FCE8F7','important');chip.style.setProperty('color','#CB11AB','important');}
+    else if(val==='ym'){chip.style.setProperty('border-color','#b8960a','important');chip.style.setProperty('background','#FFF9E0','important');chip.style.setProperty('color','#8a6f00','important');}
+  }
+}
 
 var selectedEmployment='';
-document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(chip=>{
-  chip.addEventListener('click',function(){
-    selectedEmployment=chip.dataset.val;
-    document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(ch=>{
-      ch.style.borderColor='';ch.style.background='';ch.style.color='';
-    });
-    chip.style.borderColor='var(--ozon)';chip.style.background='#E8F0FF';chip.style.color='var(--ozon)';
+function empClick(chip){
+  selectedEmployment=chip.dataset.val;
+  document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(function(ch){
+    ch.style.removeProperty('border-color');ch.style.removeProperty('background');ch.style.removeProperty('color');
   });
-});
+  chip.style.setProperty('border-color','#005BFF','important');chip.style.setProperty('background','#E8F0FF','important');chip.style.setProperty('color','#005BFF','important');
+}
 
 var selectedPvzExp=new Set();
-document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(chip=>{
-  chip.addEventListener('click',function(){
-    var val=chip.dataset.val;
-    if(val==='нет'){
-      selectedPvzExp.clear();
-      document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(ch=>{
-        ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima');
-      });
-      if(!chip.classList.contains('checked-no')){
-        selectedPvzExp.add('нет');chip.classList.add('checked-no');
-      }
-    } else {
-      var noChip=document.querySelector('.pvz-exp-chip[data-group="pvz_exp"][data-val="нет"]');
-      if(noChip){noChip.classList.remove('checked-no');selectedPvzExp.delete('нет');}
-      if(selectedPvzExp.has(val)){
-        selectedPvzExp.delete(val);chip.classList.remove('checked-'+val);
-      } else {
-        selectedPvzExp.add(val);chip.classList.add('checked-'+val);
-      }
+function pvzExpClick(chip){
+  var val=chip.dataset.val;
+  if(val==='нет'){
+    selectedPvzExp.clear();
+    document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(function(ch){
+      ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima');
+    });
+    if(!chip.classList.contains('checked-no')){
+      selectedPvzExp.add('нет');chip.classList.add('checked-no');
     }
-  });
-});
+  } else {
+    var noChip=document.querySelector('.pvz-exp-chip[data-group="pvz_exp"][data-val="нет"]');
+    if(noChip){noChip.classList.remove('checked-no');selectedPvzExp.delete('нет');}
+    if(selectedPvzExp.has(val)){
+      selectedPvzExp.delete(val);chip.classList.remove('checked-'+val);
+    } else {
+      selectedPvzExp.add(val);chip.classList.add('checked-'+val);
+    }
+  }
+}
 
 // --- Карточки ПВЗ ---
 document.querySelectorAll('.pvz-card').forEach(card=>{
