@@ -446,6 +446,10 @@ textarea{resize:vertical;min-height:70px}
           </div>
         </div>
         <input type="hidden" id="work-addr">
+        <div class="fg" style="margin-top:12px">
+          <label for="exact-addr" style="color:var(--text2)">По желанию напишите точный адрес</label>
+          <input type="text" id="exact-addr" placeholder="Например: ул. Северная, 15">
+        </div>
 
         <!-- Модальное окно -->
         <div class="d-modal" id="district-modal">
@@ -634,7 +638,8 @@ form.addEventListener('submit',async e=>{
     pvz_experience:getSelectedPvzExp(),
     education:document.getElementById('edu').value.trim(),
     about:document.getElementById('ab').value.trim(),
-    work_location_addr:document.getElementById('work-addr').value||null
+    work_location_addr:document.getElementById('work-addr').value||null,
+    exact_address:document.getElementById('exact-addr').value.trim()||null
   };
   if(!data.full_name)return showErr('Укажите ФИО');
   if(!document.getElementById('bd').value)return showErr('Укажите дату рождения');
@@ -678,6 +683,7 @@ againBtn.addEventListener('click',()=>{
   const nm=document.getElementById('selfie-name');if(nm)nm.style.display='none';
   selDistrict='';selMicro='';
   document.getElementById('work-addr').value='';
+  document.getElementById('exact-addr').value='';
   document.getElementById('district-display').textContent='Выберите район';
   document.getElementById('micro-display').textContent='Выберите микрорайон';
   document.getElementById('district-field').classList.remove('filled');
