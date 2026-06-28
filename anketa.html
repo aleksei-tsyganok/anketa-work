@@ -75,7 +75,7 @@ textarea{resize:vertical;min-height:70px}
   border:1px solid #ffcdd2;border-radius:var(--radius-sm);
   padding:12px 16px;font-size:.88rem;margin-bottom:14px;display:none
 }
-.success{text-align:center;padding:48px 20px;display:none}
+.success{text-align:center;padding:48px 20px;display:none;visibility:hidden}
 .success .si{font-size:3rem;display:block;margin-bottom:12px}
 .success h3{font-size:1.25rem;margin-bottom:8px}
 .success p{color:var(--text2);margin-bottom:22px}
@@ -357,6 +357,32 @@ input[type="date"]{
   min-height:46px;
   line-height:1.5;
 }
+
+/* ─── Попап успеха ─── */
+.success-overlay{
+  position:fixed;inset:0;z-index:9999;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  padding:20px;
+}
+.success-overlay.show{display:flex}
+.success-popup{
+  background:var(--surface);border-radius:24px;
+  padding:48px 36px;text-align:center;
+  max-width:400px;width:100%;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+  animation:popIn .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn{
+  from{transform:scale(.7);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+.success-popup .si{font-size:4rem;display:block;margin-bottom:16px}
+.success-popup h3{
+  font-size:1.4rem;font-weight:800;margin-bottom:10px;
+  letter-spacing:-.3px;color:var(--text);
+}
+.success-popup p{color:var(--text2);font-size:.95rem;margin-bottom:28px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -495,12 +521,7 @@ input[type="date"]{
 
       <div class="err" id="err"></div>
 
-      <div class="success" id="success">
-        <span class="si">✅</span>
-        <h3>Анкета успешно заполнена!</h3>
-        <p>Ожидайте звонка</p>
-        <button type="button" class="btn btn-p" id="again">Заполнить ещё раз</button>
-      </div>
+
 
       <div class="acts"><button type="submit" class="btn btn-p btn-lg" id="submit-btn"><span id="btn-text">Отправить анкету</span><span class="loader" id="btn-loader"></span></button></div>
     </form>
@@ -522,7 +543,7 @@ try{
 var form=document.getElementById('form'), selfieBtn=document.getElementById('selfie-btn');
 var selfieInp=document.getElementById('selfie-gallery');
 var subBtn=document.getElementById('submit-btn'), btnText=document.getElementById('btn-text'), btnLoad=document.getElementById('btn-loader');
-var errEl=document.getElementById('err'), successEl=document.getElementById('success'), againBtn=document.getElementById('again');
+var errEl=document.getElementById('err'), againBtn=document.getElementById('again');
 var phInp=document.getElementById('ph');
 var selFile=null;
 
@@ -674,21 +695,13 @@ form.addEventListener('submit',async e=>{
     }
     const {error}=await sb.from('applications').insert({...data,selfie_url:selfieUrl,status:'new'});
     if(error)throw error;
-    form.hidden=true;successEl.style.display='block';errEl.style.display='none'
+    form.hidden=true;errEl.style.display='none';document.getElementById('success-overlay').classList.add('show');window.scrollTo({top:0,behavior:'smooth'})
   }catch(e){
     console.error(e);showErr(e.message||'Ошибка отправки')
   }finally{setLoad(false)}
 });
 
-againBtn.addEventListener('click',()=>{
-  form.reset();form.hidden=false;successEl.style.display='none';selFile=null;
-  const nm=document.getElementById('selfie-name');if(nm)nm.style.display='none';
-  selDistrict='';
-  document.getElementById('work-addr').value='';
-  document.getElementById('exact-addr').value='';
-  document.getElementById('district-display').textContent='Выберите район';
-  document.getElementById('district-field').classList.remove('filled');
-  document.querySelectorAll('.pvz-card').forEach(c=>{c.querySelector('input').checked=false;c.classList.remove('checked-ozon','checked-wb','checked-ym')});
+
   selectedEmployment='';document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(ch=>{ch.style.borderColor='';ch.style.background='';ch.style.color=''});
   selectedPvzExp.clear();document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(ch=>{ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima')});
   selectedMp=new Set();document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(ch=>{ch.style.borderColor='';ch.style.background='';ch.style.color='';});
@@ -837,5 +850,13 @@ function showErr(m){errEl.textContent=m;errEl.style.display='block'}
 function hideErr(){errEl.style.display='none';errEl.textContent=''}
 function setLoad(l){subBtn.disabled=l;btnText.style.display=l?'none':'inline';btnLoad.style.display=l?'inline-flex':'none'}
 </script>
+<div class="success-overlay" id="success-overlay">
+  <div class="success-popup">
+    <span class="si">✅</span>
+    <h3>Анкета успешно заполнена!</h3>
+    <p>Ожидайте звонка — мы свяжемся с вами в ближайшее время</p>
+  </div>
+</div>
+
 </body>
 </html>
