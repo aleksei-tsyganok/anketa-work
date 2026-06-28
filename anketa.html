@@ -140,9 +140,10 @@ textarea{resize:vertical;min-height:70px}
 .pvz-exp-chip.checked-ozon{border-color:var(--ozon);background:#E8F0FF;color:var(--ozon)}
 .pvz-exp-chip.checked-wb{border-color:var(--wb);background:#FCE8F7;color:var(--wb)}
 .pvz-exp-chip.checked-ym{border-color:#b8960a;background:#FFF9E0;color:#8a6f00}
+.pvz-exp-chip.checked-dpd{border-color:#C00;background:#FFF0F0;color:#C00}
+.pvz-exp-chip.checked-sima{border-color:#111;background:#f0f0f0;color:#111}
 
 /* ─── Карточки ПВЗ для работы ─── */
-.pvz-cards{display:flex;flex-direction:column;gap:10px}
 .pvz-card{
   display:flex;align-items:center;gap:14px;
   padding:14px 16px;border-radius:var(--radius-sm);
@@ -181,6 +182,59 @@ textarea{resize:vertical;min-height:70px}
 .pvz-card.checked-ozon .pvz-card-check::after,
 .pvz-card.checked-wb .pvz-card-check::after,
 .pvz-card.checked-ym .pvz-card-check::after{display:block}
+
+/* ─── Suggest автодополнение ─── */
+.suggest-wrap{position:relative}
+.suggest-list{
+  position:absolute;top:100%;left:0;right:0;z-index:999;
+  background:var(--surface);border:1.5px solid var(--ozon);
+  border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);
+  box-shadow:0 4px 16px rgba(0,0,0,.1);
+  max-height:220px;overflow-y:auto;display:none;
+}
+.suggest-list.open{display:block}
+.suggest-item{
+  padding:10px 14px;font-size:.88rem;cursor:pointer;
+  border-bottom:1px solid var(--border);color:var(--text);
+  transition:background .12s;line-height:1.4;
+}
+.suggest-item:last-child{border-bottom:none}
+.suggest-item:hover,.suggest-item.active{background:#EEF4FF;color:var(--ozon)}
+.suggest-item em{font-style:normal;font-weight:700;color:var(--ozon)}
+
+/* ─── Согласие ─── */
+.consent-box{
+  background:#F7F9FF;border:1.5px solid #DDE6FF;border-radius:var(--radius-sm);
+  padding:16px;font-size:.82rem;color:var(--text2);line-height:1.7;margin-bottom:16px
+}
+.consent-box strong{color:var(--text);font-weight:600}
+.consent-check{
+  display:flex;align-items:flex-start;gap:10px;
+  cursor:pointer;font-size:.84rem;line-height:1.55;color:var(--text2);
+  user-select:none;margin-bottom:10px
+}
+.consent-check:last-child{margin-bottom:0}
+.consent-check input[type="checkbox"]{
+  width:18px;height:18px;min-width:18px;
+  accent-color:var(--ozon);cursor:pointer;margin-top:2px;padding:0
+}
+.consent-check a{color:var(--ozon);text-decoration:none}
+.consent-check a:hover{text-decoration:underline}
+</style>
+<style>
+
+/* ─── Яндекс карта ─── */
+#work-map{
+  height:320px;border-radius:var(--radius-sm);
+  border:1.5px solid var(--border);overflow:hidden;
+  margin-bottom:10px;
+}
+.map-hint{font-size:.82rem;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+#map-reset{
+  font-size:.78rem;color:var(--text2);background:none;border:none;
+  cursor:pointer;text-decoration:underline;padding:4px 0;margin-top:4px;display:none
+}
+#map-reset.has{display:inline}
 </style>
 </head>
 <body>
@@ -205,17 +259,30 @@ textarea{resize:vertical;min-height:70px}
         <div class="sec-hdr"><span class="step">1</span><h2>Личные данные</h2></div>
         <div class="grid">
           <div class="fg"><label for="fn">ФИО *</label><input type="text" id="fn" required placeholder="Иванов Иван Иванович"></div>
-          <div class="fg"><label for="bd">Дата рождения</label><input type="date" id="bd"></div>
+          <div class="fg"><label for="bd">Дата рождения <span style="color:var(--ozon)">*</span></label><input type="date" id="bd" required></div>
           <div class="fg"><label for="ph">Телефон *</label><input type="tel" id="ph" required placeholder="+7 (999) 123-45-67" inputmode="numeric" value="+7"></div>
-          <div class="fg"><label for="em">Telegram</label><input type="text" id="em" placeholder="@username или t.me/username"></div>
+          <div class="fg"><label for="em">Telegram <span style="color:var(--ozon)">*</span></label><input type="text" id="em" placeholder="@username или t.me/username" required></div>
         </div>
       </div>
 
       <div class="sec">
         <div class="sec-hdr"><span class="step">2</span><h2>О себе</h2></div>
-        <div class="fg" style="margin-bottom:16px"><label for="exp">Опыт работы</label><textarea id="exp" rows="3" placeholder="Где и кем работали ранее"></textarea></div>
         <div class="fg" style="margin-bottom:16px">
-          <span class="pvz-exp-label">Есть ли опыт работы на ПВЗ?</span>
+          <span class="pvz-exp-label">Тип занятости <span style="color:var(--ozon)">*</span></span>
+          <div class="pvz-exp-row">
+            <label class="pvz-exp-chip" data-group="employment" data-val="full">
+              <input type="radio" name="employment" value="full"> Полная занятость
+            </label>
+            <label class="pvz-exp-chip" data-group="employment" data-val="short">
+              <input type="radio" name="employment" value="short"> На короткий период
+            </label>
+            <label class="pvz-exp-chip" data-group="employment" data-val="sub">
+              <input type="radio" name="employment" value="sub"> На подмены
+            </label>
+          </div>
+        </div>
+        <div class="fg" style="margin-bottom:16px">
+          <span class="pvz-exp-label">Есть ли опыт работы на ПВЗ? <span style="color:var(--ozon)">*</span></span>
           <div class="pvz-exp-row" id="pvz-exp-row">
             <label class="pvz-exp-chip" data-val="нет">
               <input type="checkbox" name="pvz_exp" value="нет"> Нет опыта
@@ -229,14 +296,21 @@ textarea{resize:vertical;min-height:70px}
             <label class="pvz-exp-chip" data-val="ym">
               <input type="checkbox" name="pvz_exp" value="yandex_market"> Яндекс Маркет
             </label>
+            <label class="pvz-exp-chip" data-val="dpd">
+              <input type="checkbox" name="pvz_exp" value="dpd"> DPD
+            </label>
+            <label class="pvz-exp-chip" data-val="sima">
+              <input type="checkbox" name="pvz_exp" value="sima_land"> Sima Land
+            </label>
           </div>
         </div>
-        <div class="fg" style="margin-bottom:16px"><label for="edu">Образование</label><select id="edu"><option value="">— выберите —</option><option value="учится">Учусь</option><option value="высшее">Высшее</option><option value="среднее">Среднее</option><option value="планирует">Планирую поступать</option><option value="не_планирует">Не планирую учиться</option></select></div>
-        <div class="fg"><label for="ab">О себе</label><textarea id="ab" rows="4" placeholder="Почему хотите работать на ПВЗ"></textarea></div>
+        <div class="fg" style="margin-bottom:16px"><label for="exp">Опыт работы <span style="color:var(--ozon)">*</span></label><textarea id="exp" rows="3" placeholder="Где и кем работали ранее" required></textarea></div>
+        <div class="fg" style="margin-bottom:16px"><label for="edu">Образование <span style="color:var(--ozon)">*</span></label><select id="edu" required><option value="">— выберите —</option><option value="учится">Учусь</option><option value="высшее">Высшее</option><option value="среднее">Среднее</option><option value="планирует">Планирую поступать</option><option value="не_планирует">Не планирую учиться</option></select></div>
+        <div class="fg"><label for="ab">О себе <span style="color:var(--ozon)">*</span></label><textarea id="ab" rows="4" placeholder="Почему хотите работать на ПВЗ" required></textarea></div>
       </div>
 
       <div class="sec">
-        <div class="sec-hdr"><span class="step">3</span><h2>Фото</h2></div>
+        <div class="sec-hdr"><span class="step">3</span><h2>Фото <span style="color:var(--ozon);font-size:.9rem">*</span></h2></div>
         <div class="selfie-wrap">
           <input type="file" id="selfie" accept="image/*" style="display:none">
           <button type="button" class="btn btn-p" id="selfie-btn">📎 Прикрепить фото</button>
@@ -245,91 +319,51 @@ textarea{resize:vertical;min-height:70px}
       </div>
 
       <div class="sec">
-        <div class="sec-hdr"><span class="step">4</span><h2>Выбор ПВЗ для работы</h2></div>
-        <p style="font-size:.83rem;color:var(--text2);margin-bottom:14px">Выберите один или несколько — все адреса в Красноярске</p>
-        <div class="pvz-cards" id="pvz-cards">
-
-          <label class="pvz-card" data-mp="ozon" data-addr="ул. Северная, 9, Красноярск">
-            <input type="checkbox" name="pvz_work" value="ozon|ул. Северная, 9, Красноярск">
-            <div class="pvz-card-badge badge-ozon">OZ<br>ON</div>
-            <div class="pvz-card-info">
-              <div class="pvz-card-name">ул. Северная, 9</div>
-              <div class="pvz-card-addr">Советский район · OZON</div>
-            </div>
-            <div class="pvz-card-check"></div>
-          </label>
-
-          <label class="pvz-card" data-mp="ozon" data-addr="ул. Ольховая, 2а, Красноярск">
-            <input type="checkbox" name="pvz_work" value="ozon|ул. Ольховая, 2а, Красноярск">
-            <div class="pvz-card-badge badge-ozon">OZ<br>ON</div>
-            <div class="pvz-card-info">
-              <div class="pvz-card-name">ул. Ольховая, 2а</div>
-              <div class="pvz-card-addr">Октябрьский район · OZON</div>
-            </div>
-            <div class="pvz-card-check"></div>
-          </label>
-
-          <label class="pvz-card" data-mp="ozon" data-addr="ул. Яковлева, 46, Красноярск">
-            <input type="checkbox" name="pvz_work" value="ozon|ул. Яковлева, 46, Красноярск">
-            <div class="pvz-card-badge badge-ozon">OZ<br>ON</div>
-            <div class="pvz-card-info">
-              <div class="pvz-card-name">ул. Яковлева, 46</div>
-              <div class="pvz-card-addr">Ленинский район · OZON</div>
-            </div>
-            <div class="pvz-card-check"></div>
-          </label>
-
-          <label class="pvz-card" data-mp="wb" data-addr="пр. Красноярский Рабочий, 63Б, Красноярск">
-            <input type="checkbox" name="pvz_work" value="wb|пр. Красноярский Рабочий, 63Б, Красноярск">
-            <div class="pvz-card-badge badge-wb">WB</div>
-            <div class="pvz-card-info">
-              <div class="pvz-card-name">пр. Красноярский Рабочий, 63Б</div>
-              <div class="pvz-card-addr">Ленинский район · Wildberries</div>
-            </div>
-            <div class="pvz-card-check"></div>
-          </label>
-
-          <label class="pvz-card" data-mp="wb" data-addr="Ярыгинская набережная, 13А, Красноярск">
-            <input type="checkbox" name="pvz_work" value="wb|Ярыгинская набережная, 13А, Красноярск">
-            <div class="pvz-card-badge badge-wb">WB</div>
-            <div class="pvz-card-info">
-              <div class="pvz-card-name">Ярыгинская набережная, 13А</div>
-              <div class="pvz-card-addr">Центральный район · Wildberries</div>
-            </div>
-            <div class="pvz-card-check"></div>
-          </label>
-
-          <label class="pvz-card" data-mp="ym" data-addr="ул. Академика Киренского, 126, Красноярск">
-            <input type="checkbox" name="pvz_work" value="ym|ул. Академика Киренского, 126, Красноярск">
-            <div class="pvz-card-badge badge-ym">ЯМ</div>
-            <div class="pvz-card-info">
-              <div class="pvz-card-name">ул. Академика Киренского, 126</div>
-              <div class="pvz-card-addr">Свердловский район · Яндекс Маркет</div>
-            </div>
-            <div class="pvz-card-check"></div>
-          </label>
-
-          <label class="pvz-card" data-mp="ym" data-addr="ул. Лесопарковая, 33, Красноярск">
-            <input type="checkbox" name="pvz_work" value="ym|ул. Лесопарковая, 33, Красноярск">
-            <div class="pvz-card-badge badge-ym">ЯМ</div>
-            <div class="pvz-card-info">
-              <div class="pvz-card-name">ул. Лесопарковая, 33</div>
-              <div class="pvz-card-addr">Советский район · Яндекс Маркет</div>
-            </div>
-            <div class="pvz-card-check"></div>
-          </label>
-
-          <label class="pvz-card" data-mp="ym" data-addr="ул. Дмитрия Мартынова, 24, Красноярск">
-            <input type="checkbox" name="pvz_work" value="ym|ул. Дмитрия Мартынова, 24, Красноярск">
-            <div class="pvz-card-badge badge-ym">ЯМ</div>
-            <div class="pvz-card-info">
-              <div class="pvz-card-name">ул. Дмитрия Мартынова, 24</div>
-              <div class="pvz-card-addr">Железнодорожный район · Яндекс Маркет</div>
-            </div>
-            <div class="pvz-card-check"></div>
-          </label>
-
+        <div class="sec-hdr"><span class="step">4</span><h2>Где удобно работать</h2></div>
+        <div class="fg" style="margin-bottom:16px">
+          <span class="pvz-exp-label">Выберите маркетплейс <span style="color:var(--ozon)">*</span></span>
+          <div class="pvz-exp-row">
+            <label class="pvz-exp-chip" data-group="mp" data-val="ozon">
+              <input type="radio" name="mp_choice" value="ozon"> OZON
+            </label>
+            <label class="pvz-exp-chip" data-group="mp" data-val="wb">
+              <input type="radio" name="mp_choice" value="wildberries"> Wildberries
+            </label>
+            <label class="pvz-exp-chip" data-group="mp" data-val="ym">
+              <input type="radio" name="mp_choice" value="yandex_market"> Яндекс Маркет
+            </label>
+          </div>
         </div>
+        <p class="map-hint">Нажмите на карту — отметьте район, в котором вам комфортно работать, или впишите адрес вручную</p>
+        <div id="work-map"></div>
+        <div class="fg" style="margin-top:12px">
+          <label for="work-addr">Адрес или район</label>
+          <div class="suggest-wrap">
+            <input type="text" id="work-addr" placeholder="Например: Советский район или ул. Северная" autocomplete="off">
+            <div class="suggest-list" id="suggest-list"></div>
+          </div>
+        </div>
+        <button type="button" id="map-reset">Убрать метку</button>
+      </div>
+
+      <div class="sec">
+        <div class="sec-hdr"><span class="step">5</span><h2>Согласие на обработку данных</h2></div>
+        <div class="consent-box">
+          <strong>Что мы собираем:</strong> ФИО, дату рождения, телефон, Telegram, фотографию, сведения об образовании, опыте работы и предпочтительном районе.<br><br>
+          <strong>Цель:</strong> рассмотрение вашей кандидатуры на должность сотрудника пункта выдачи заказов (ПВЗ).<br><br>
+          <strong>Правовое основание:</strong> ст. 9 Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных».<br><br>
+          <strong>Срок хранения:</strong> не более 1 года с момента подачи анкеты. По истечении срока данные уничтожаются.<br><br>
+          <strong>Передача третьим лицам:</strong> не осуществляется без вашего письменного согласия.<br><br>
+          Вы вправе в любой момент отозвать согласие, обратившись к работодателю. Отзыв не влияет на законность обработки, осуществлённой до его получения.
+        </div>
+        <label class="consent-check">
+          <input type="checkbox" id="consent" required>
+          <span>Я ознакомлен(а) с условиями обработки персональных данных и даю согласие в соответствии с требованиями ФЗ № 152-ФЗ.</span>
+        </label>
+        <label class="consent-check">
+          <input type="checkbox" id="consent2" required>
+          <span>Подтверждаю, что все указанные сведения являются достоверными и актуальными.</span>
+        </label>
       </div>
 
       <div class="err" id="err"></div>
@@ -348,6 +382,7 @@ textarea{resize:vertical;min-height:70px}
   <footer class="footer"><div class="container"><p>Работа на ПВЗ © 2026</p></div></footer>
 </div>
 
+<script src="https://api-maps.yandex.ru/2.1/?apikey=10125f3f-77e3-4dab-a477-1f14ed227060&lang=ru_RU" type="text/javascript"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script>
 const SUPABASE_URL = 'https://jqseowqgwvyjbagzkwpm.supabase.co';
@@ -361,14 +396,107 @@ const errEl=document.getElementById('err'), successEl=document.getElementById('s
 const phInp=document.getElementById('ph');
 let selFile=null;
 
+// --- Яндекс Карта ---
+let ymapInited=false, workPlacemark=null, workLatLng=null;
+
+function initYmap(){
+  if(ymapInited)return;
+  ymapInited=true;
+  ymaps.ready(function(){
+    const myMap=new ymaps.Map('work-map',{
+      center:[56.0153,92.8932],
+      zoom:12,
+      controls:['zoomControl']
+    });
+    myMap.cursors.push('pointer');
+
+    myMap.events.add('click',function(e){
+      const coords=e.get('coords');
+      workLatLng={lat:coords[0],lng:coords[1]};
+
+      if(workPlacemark)myMap.geoObjects.remove(workPlacemark);
+      workPlacemark=new ymaps.Placemark(coords,{},{
+        preset:'islands#blueCircleDotIcon'
+      });
+      myMap.geoObjects.add(workPlacemark);
+
+      document.getElementById('map-reset').className='has';
+      document.getElementById('work-addr').value='Определяем адрес…';
+
+      ymaps.geocode(coords,{results:1}).then(function(result){
+        const obj=result.geoObjects.get(0);
+        const addr=obj?obj.getAddressLine():`${coords[0].toFixed(5)}, ${coords[1].toFixed(5)}`;
+        document.getElementById('work-addr').value=addr;
+      }).catch(function(){
+        document.getElementById('work-addr').value=`${coords[0].toFixed(5)}, ${coords[1].toFixed(5)}`;
+      });
+    });
+  });
+}
+
+document.getElementById('map-reset').addEventListener('click',()=>{
+  workLatLng=null;
+  document.getElementById('work-addr').value='';
+  document.getElementById('map-reset').className='';
+});
+
+// Ленивая инициализация — грузим карту когда доскроллили
+const _mapObs=new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting){initYmap();_mapObs.disconnect()}
+},{threshold:0.1});
+_mapObs.observe(document.getElementById('work-map'));
+
+
+
+
 // --- Чипы опыта ПВЗ ---
-document.querySelectorAll('.pvz-exp-chip').forEach(chip=>{
+document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(ch=>{
+      ch.style.borderColor='';ch.style.background='';ch.style.color='';
+    });
+    chip.querySelector('input').checked=true;
+    const val=chip.dataset.val;
+    if(val==='ozon'){chip.style.borderColor='var(--ozon)';chip.style.background='#E8F0FF';chip.style.color='var(--ozon)';}
+    else if(val==='wb'){chip.style.borderColor='var(--wb)';chip.style.background='#FCE8F7';chip.style.color='var(--wb)';}
+    else if(val==='ym'){chip.style.borderColor='#b8960a';chip.style.background='#FFF9E0';chip.style.color='#8a6f00';}
+  });
+});
+
+document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    const rb=chip.querySelector('input[type="radio"]');
+    document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(ch=>{
+      ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima');
+      ch.style.borderColor='';ch.style.background='';ch.style.color='';
+    });
+    rb.checked=true;
+    chip.style.borderColor='var(--ozon)';
+    chip.style.background='#E8F0FF';
+    chip.style.color='var(--ozon)';
+  });
+});
+
+document.querySelectorAll('.pvz-exp-chip[data-group!="employment"], .pvz-exp-chip:not([data-group])').forEach(chip=>{
   chip.addEventListener('click',()=>{
     const cb=chip.querySelector('input');
-    cb.checked=!cb.checked;
     const val=chip.dataset.val;
-    chip.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym');
-    if(cb.checked) chip.classList.add('checked-'+val);
+    const wasChecked=cb.checked;
+    // Если кликнули «нет» — снять все остальные
+    if(val==='нет'){
+      document.querySelectorAll('.pvz-exp-chip').forEach(ch=>{
+        ch.querySelector('input').checked=false;
+        ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima');
+      });
+      if(!wasChecked){cb.checked=true;chip.classList.add('checked-no');}
+    } else {
+      // Если выбираем конкретный — снять «нет»
+      const noChip=document.querySelector('.pvz-exp-chip[data-val="нет"]');
+      if(noChip){noChip.querySelector('input').checked=false;noChip.classList.remove('checked-no');}
+      cb.checked=!wasChecked;
+      chip.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima');
+      if(cb.checked) chip.classList.add('checked-'+val);
+    }
   });
 });
 
@@ -424,27 +552,35 @@ selfieInp.addEventListener('change',e=>{
 // --- Отправка ---
 form.addEventListener('submit',async e=>{
   e.preventDefault();hideErr();
-  const pvzSelected=getSelectedPvz();
-  if(!pvzSelected.length)return showErr('Выберите хотя бы один ПВЗ для работы');
   const phone=phInp.value.trim();
   const pdigs=phone.replace(/\D/g,'');
-  if(pdigs.length<7)return showErr('Введите номер телефона — минимум 7 цифр после +7');
-  const pvzParts=pvzSelected[0].split('|');
   const data={
     full_name:document.getElementById('fn').value.trim(),
     phone,
     email:document.getElementById('em').value.trim(),
     birth_date:document.getElementById('bd').value||null,
     experience:document.getElementById('exp').value.trim(),
+    marketplace:document.querySelector('input[name="mp_choice"]:checked')?.value||null,
+    employment_type:document.querySelector('input[name="employment"]:checked')?.value||null,
     pvz_experience:getSelectedPvzExp(),
     education:document.getElementById('edu').value.trim(),
     about:document.getElementById('ab').value.trim(),
-    marketplace:pvzParts[0]==='ym'?'yandex_market':pvzParts[0]==='wb'?'wildberries':'ozon',
-    primary_address:pvzParts[1]||'',
-    backup_address_1:pvzSelected[1]?pvzSelected[1].split('|')[1]:null,
-    backup_address_2:pvzSelected[2]?pvzSelected[2].split('|')[1]:null
+    work_location:workLatLng?`${workLatLng.lat.toFixed(5)},${workLatLng.lng.toFixed(5)}`:null,
+    work_location_addr:document.getElementById('work-addr').value.trim()||null
   };
   if(!data.full_name)return showErr('Укажите ФИО');
+  if(!document.getElementById('bd').value)return showErr('Укажите дату рождения');
+  if(pdigs.length<7)return showErr('Введите номер телефона');
+  if(!data.email)return showErr('Укажите Telegram');
+  if(!document.querySelector('input[name="mp_choice"]:checked'))return showErr('Выберите маркетплейс');
+  if(!document.querySelector('input[name="employment"]:checked'))return showErr('Выберите тип занятости');
+  if(!document.querySelector('input[name="pvz_exp"]:checked'))return showErr('Укажите опыт работы на ПВЗ');
+  if(!data.experience)return showErr('Заполните поле «Опыт работы»');
+  if(!data.education)return showErr('Выберите образование');
+  if(!data.about)return showErr('Заполните поле «О себе»');
+  if(!selFile)return showErr('Прикрепите фото');
+  if(!document.getElementById('consent').checked)return showErr('Необходимо дать согласие на обработку персональных данных');
+  if(!document.getElementById('consent2').checked)return showErr('Подтвердите достоверность указанных сведений');
   if(!sb)return showErr('Сервер базы данных не загружен. Проверьте подключение к интернету.');
 
   setLoad(true);
@@ -469,10 +605,95 @@ form.addEventListener('submit',async e=>{
 againBtn.addEventListener('click',()=>{
   form.reset();form.hidden=false;successEl.style.display='none';selFile=null;
   const nm=document.getElementById('selfie-name');if(nm)nm.style.display='none';
+  if(workMarker){workMap.removeLayer(workMarker);workMarker=null}workLatLng=null;document.getElementById('map-result').className='';document.getElementById('map-reset').className='';
+  if(workLatLng){workLatLng=null;workPlacemark=null;document.getElementById('work-addr').value='';document.getElementById('map-reset').className='';}
   document.querySelectorAll('.pvz-card').forEach(c=>{c.querySelector('input').checked=false;c.classList.remove('checked-ozon','checked-wb','checked-ym')});
-  document.querySelectorAll('.pvz-exp-chip').forEach(ch=>{ch.querySelector('input').checked=false;ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym')});
+  document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(ch=>{ch.querySelector('input').checked=false;ch.style.borderColor='';ch.style.background='';ch.style.color=''});
+  document.querySelectorAll('.pvz-exp-chip:not([data-group])').forEach(ch=>{ch.querySelector('input').checked=false;ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima')});
+  document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(ch=>{ch.querySelector('input').checked=false;ch.style.borderColor='';ch.style.background='';ch.style.color='';});
+  document.getElementById('consent').checked=false;
+  document.getElementById('consent2').checked=false;
   hideErr();window.scrollTo({top:0,behavior:'smooth'})
 });
+
+
+// --- Suggest для поля адреса ---
+(function(){
+  const inp = document.getElementById('work-addr');
+  const list = document.getElementById('suggest-list');
+  let activeIdx = -1, lastQuery = '', timer = null;
+
+  function highlight(text, query) {
+    if (!query) return text;
+    const re = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+    return text.replace(re, '<em>$1</em>');
+  }
+
+  function renderItems(items, query) {
+    if (!items.length) { list.classList.remove('open'); return; }
+    list.innerHTML = items.map((item, i) =>
+      `<div class="suggest-item" data-idx="${i}" data-value="${item.value}">${highlight(item.displayName || item.value, query)}</div>`
+    ).join('');
+    activeIdx = -1;
+    list.classList.add('open');
+    list.querySelectorAll('.suggest-item').forEach(el => {
+      el.addEventListener('mousedown', e => {
+        e.preventDefault();
+        inp.value = el.dataset.value;
+        list.classList.remove('open');
+        inp.dispatchEvent(new Event('change'));
+      });
+    });
+  }
+
+  function search(query) {
+    if (!query || query.length < 2) { list.classList.remove('open'); return; }
+    ymaps.ready(function() {
+      ymaps.suggest('Красноярск, ' + query, {results: 7, boundedBy: [[55.7,92.4],[56.3,93.4]]})
+        .then(function(items) {
+          const filtered = items.map(item => ({
+            value: item.displayName,
+            displayName: item.displayName
+          }));
+          renderItems(filtered, query);
+        })
+        .catch(function() { list.classList.remove('open'); });
+    });
+  }
+
+  inp.addEventListener('input', function() {
+    const q = this.value.trim();
+    clearTimeout(timer);
+    if (q === lastQuery) return;
+    lastQuery = q;
+    timer = setTimeout(() => search(q), 250);
+  });
+
+  inp.addEventListener('keydown', function(e) {
+    const items = list.querySelectorAll('.suggest-item');
+    if (!items.length) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIdx = Math.min(activeIdx + 1, items.length - 1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIdx = Math.max(activeIdx - 1, 0);
+    } else if (e.key === 'Enter' && activeIdx >= 0) {
+      e.preventDefault();
+      inp.value = items[activeIdx].dataset.value;
+      list.classList.remove('open');
+      return;
+    } else if (e.key === 'Escape') {
+      list.classList.remove('open'); return;
+    } else { return; }
+    items.forEach((el, i) => el.classList.toggle('active', i === activeIdx));
+    if (items[activeIdx]) items[activeIdx].scrollIntoView({block:'nearest'});
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.suggest-wrap')) list.classList.remove('open');
+  });
+})();
 
 function showErr(m){errEl.textContent=m;errEl.style.display='block'}
 function hideErr(){errEl.style.display='none';errEl.textContent=''}
