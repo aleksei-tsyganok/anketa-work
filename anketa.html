@@ -284,22 +284,22 @@ textarea{resize:vertical;min-height:70px}
         <div class="fg" style="margin-bottom:16px">
           <span class="pvz-exp-label">Есть ли опыт работы на ПВЗ? <span style="color:var(--ozon)">*</span></span>
           <div class="pvz-exp-row" id="pvz-exp-row">
-            <label class="pvz-exp-chip" data-val="нет">
+            <label class="pvz-exp-chip" data-group="pvz_exp" data-val="нет">
               <input type="checkbox" name="pvz_exp" value="нет"> Нет опыта
             </label>
-            <label class="pvz-exp-chip" data-val="ozon">
+            <label class="pvz-exp-chip" data-group="pvz_exp" data-val="ozon">
               <input type="checkbox" name="pvz_exp" value="ozon"> OZON
             </label>
-            <label class="pvz-exp-chip" data-val="wb">
+            <label class="pvz-exp-chip" data-group="pvz_exp" data-val="wb">
               <input type="checkbox" name="pvz_exp" value="wildberries"> Wildberries
             </label>
-            <label class="pvz-exp-chip" data-val="ym">
+            <label class="pvz-exp-chip" data-group="pvz_exp" data-val="ym">
               <input type="checkbox" name="pvz_exp" value="yandex_market"> Яндекс Маркет
             </label>
-            <label class="pvz-exp-chip" data-val="dpd">
+            <label class="pvz-exp-chip" data-group="pvz_exp" data-val="dpd">
               <input type="checkbox" name="pvz_exp" value="dpd"> DPD
             </label>
-            <label class="pvz-exp-chip" data-val="sima">
+            <label class="pvz-exp-chip" data-group="pvz_exp" data-val="sima">
               <input type="checkbox" name="pvz_exp" value="sima_land"> Sima Land
             </label>
           </div>
@@ -477,21 +477,20 @@ document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(chip
   });
 });
 
-document.querySelectorAll('.pvz-exp-chip[data-group!="employment"], .pvz-exp-chip:not([data-group])').forEach(chip=>{
+document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(chip=>{
   chip.addEventListener('click',()=>{
     const cb=chip.querySelector('input');
     const val=chip.dataset.val;
     const wasChecked=cb.checked;
-    // Если кликнули «нет» — снять все остальные
     if(val==='нет'){
-      document.querySelectorAll('.pvz-exp-chip').forEach(ch=>{
+      document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(ch=>{
         ch.querySelector('input').checked=false;
         ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima');
       });
       if(!wasChecked){cb.checked=true;chip.classList.add('checked-no');}
     } else {
       // Если выбираем конкретный — снять «нет»
-      const noChip=document.querySelector('.pvz-exp-chip[data-val="нет"]');
+      const noChip=document.querySelector('.pvz-exp-chip[data-group="pvz_exp"][data-val="нет"]');
       if(noChip){noChip.querySelector('input').checked=false;noChip.classList.remove('checked-no');}
       cb.checked=!wasChecked;
       chip.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima');
@@ -609,7 +608,7 @@ againBtn.addEventListener('click',()=>{
   if(workLatLng){workLatLng=null;workPlacemark=null;document.getElementById('work-addr').value='';document.getElementById('map-reset').className='';}
   document.querySelectorAll('.pvz-card').forEach(c=>{c.querySelector('input').checked=false;c.classList.remove('checked-ozon','checked-wb','checked-ym')});
   document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(ch=>{ch.querySelector('input').checked=false;ch.style.borderColor='';ch.style.background='';ch.style.color=''});
-  document.querySelectorAll('.pvz-exp-chip:not([data-group])').forEach(ch=>{ch.querySelector('input').checked=false;ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima')});
+  document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(ch=>{ch.querySelector('input').checked=false;ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima')});
   document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(ch=>{ch.querySelector('input').checked=false;ch.style.borderColor='';ch.style.background='';ch.style.color='';});
   document.getElementById('consent').checked=false;
   document.getElementById('consent2').checked=false;
