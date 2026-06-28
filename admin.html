@@ -151,6 +151,26 @@ tr:hover td{background:#f8fafc}
   .mf .btn{font-size:.78rem;padding:7px 8px;min-width:0}
   .ds{width:72px;height:72px}
 }
+
+/* ─── Бейджи маркетплейсов в шапке ─── */
+.hdr{padding-bottom:0 !important}
+.hdr-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0 10px}
+.mp-badges{
+  display:flex;gap:8px;
+  padding:0 0 10px;
+}
+.mp-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:148px;
+  padding:6px 0;
+  border-radius:100px;
+  font-size:.75rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  font-family:inherit;
+  user-select:none;
+}
+.mp-ozon-b{background:rgba(255,255,255,.18);color:#fff}
+.mp-wb-b{background:rgba(203,17,171,.35);color:#FFD6F5}
+.mp-ym-b{background:rgba(255,204,0,.22);color:#FFF3A3}
 </style>
 </head>
 <body>
@@ -173,9 +193,16 @@ tr:hover td{background:#f8fafc}
 <!-- DASHBOARD -->
 <div class="screen" id="dash-screen" hidden>
   <header class="hdr">
-    <div class="container hdr-row">
-      <h1>Панель управления</h1>
-      <div class="hdr-r"><span class="admin-name" id="admin-name"></span><button class="btn btn-o btn-sm" id="pw-btn" style="color:#fff;border-color:rgba(255,255,255,.4)"><span class="pw-dt">Пароль</span><span class="pw-mob">🔑</span></button><button class="btn btn-o btn-sm" id="logout-btn" style="color:#fff;border-color:rgba(255,255,255,.4)">Выйти</button></div>
+    <div class="container">
+      <div class="hdr-inner">
+        <h1>Панель управления</h1>
+        <div class="hdr-r"><span class="admin-name" id="admin-name"></span><button class="btn btn-o btn-sm" id="pw-btn" style="color:#fff;border-color:rgba(255,255,255,.4)"><span class="pw-dt">Пароль</span><span class="pw-mob">🔑</span></button><button class="btn btn-o btn-sm" id="logout-btn" style="color:#fff;border-color:rgba(255,255,255,.4)">Выйти</button></div>
+      </div>
+      <div class="mp-badges">
+        <span class="mp-badge mp-ozon-b">OZON</span>
+        <span class="mp-badge mp-wb-b">Wildberries</span>
+        <span class="mp-badge mp-ym-b">Яндекс Маркет</span>
+      </div>
     </div>
   </header>
 
