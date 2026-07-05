@@ -303,16 +303,6 @@ textarea{resize:vertical;min-height:70px}
 /* Тёмная тема — уточнения */
 [data-theme="dark"] input,
 [data-theme="dark"] textarea,
-[data-theme="dark"] select,
-@media(prefers-color-scheme:dark){
-  input,textarea,select{
-    background:var(--surface);
-    color:var(--text);
-    color-scheme:dark;
-  }
-}
-[data-theme="dark"] input,
-[data-theme="dark"] textarea,
 [data-theme="dark"] select{
   background:var(--surface);color:var(--text);color-scheme:dark;
 }
@@ -383,6 +373,19 @@ input[type="date"]{
   letter-spacing:-.3px;color:var(--text);
 }
 .success-popup p{color:var(--text2);font-size:.95rem;margin-bottom:28px;line-height:1.6}
+
+/* ─── Список ПВЗ ─── */
+.pvz-list-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:var(--radius-sm);
+  border:1.5px solid var(--border);background:var(--surface);
+  cursor:pointer;transition:all .15s;
+}
+.pvz-list-item:hover{border-color:var(--ozon);background:#EEF4FF}
+.pvz-list-item.selected{border-color:var(--ozon);background:#EEF4FF}
+.pvz-list-badge{font-size:.7rem;font-weight:800;min-width:28px;letter-spacing:.3px}
+.pvz-list-addr{flex:1;font-size:.88rem;font-weight:500;color:var(--text)}
+.pvz-list-dist{font-size:.76rem;color:var(--text2);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -470,18 +473,14 @@ input[type="date"]{
           </div>
         </div>
         <div class="fg" style="margin-bottom:12px">
-          <label>Район <span style="color:var(--ozon)">*</span></label>
-          <div class="district-field" id="district-field" onclick="openModal('district')">
-            <span id="district-display">Выберите район</span>
+          <label>Желаемый пункт выдачи <span style="color:var(--ozon)">*</span></label>
+          <div class="district-field" id="district-field" onclick="openPvzModal()">
+            <span id="district-display">Выберите адрес ПВЗ</span>
             <span class="district-field-arrow">▼</span>
           </div>
+          <p style="font-size:.76rem;color:var(--text2);margin-top:5px">Сначала выберите маркетплейс выше — покажем только его пункты</p>
         </div>
-
         <input type="hidden" id="work-addr">
-        <div class="fg" style="margin-top:12px">
-          <label for="exact-addr" style="color:var(--text2)">По желанию напишите точный адрес</label>
-          <input type="text" id="exact-addr" placeholder="Например: ул. Северная, 15">
-        </div>
 
         <!-- Модальное окно -->
         <div class="d-modal" id="district-modal">
@@ -543,7 +542,7 @@ try{
 var form=document.getElementById('form'), selfieBtn=document.getElementById('selfie-btn');
 var selfieInp=document.getElementById('selfie-gallery');
 var subBtn=document.getElementById('submit-btn'), btnText=document.getElementById('btn-text'), btnLoad=document.getElementById('btn-loader');
-var errEl=document.getElementById('err'), againBtn=document.getElementById('again');
+var errEl=document.getElementById('err');
 var phInp=document.getElementById('ph');
 var selFile=null;
 
@@ -663,7 +662,7 @@ form.addEventListener('submit',async e=>{
     education:document.getElementById('edu').value.trim(),
     about:document.getElementById('ab').value.trim(),
     work_location_addr:document.getElementById('work-addr').value||null,
-    exact_address:document.getElementById('exact-addr').value.trim()||null
+    exact_address:null
   };
   if(!data.full_name)return showErr('Укажите ФИО');
   if(!document.getElementById('bd').value)return showErr('Укажите дату рождения');
@@ -702,25 +701,127 @@ form.addEventListener('submit',async e=>{
 });
 
 
-  selectedEmployment='';document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(ch=>{ch.style.borderColor='';ch.style.background='';ch.style.color=''});
-  selectedPvzExp.clear();document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(ch=>{ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima')});
-  selectedMp=new Set();document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(ch=>{ch.style.borderColor='';ch.style.background='';ch.style.color='';});
+
+var againBtn=document.getElementById('again');
+if(againBtn){againBtn.addEventListener('click',function(){
+  form.reset();form.hidden=false;
+  document.getElementById('success-overlay').classList.remove('show');
+  selFile=null;selDistrict='';
+  document.getElementById('work-addr').value='';
+  document.getElementById('district-display').textContent='Выберите адрес ПВЗ';
+  document.getElementById('district-field').classList.remove('filled');
+
+  selectedEmployment='';document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(function(ch){ch.style.removeProperty('border-color');ch.style.removeProperty('background');ch.style.removeProperty('color');});
+  selectedPvzExp.clear();document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(function(ch){ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima');});
+  selectedMp=new Set();document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(function(ch){ch.style.removeProperty('border-color');ch.style.removeProperty('background');ch.style.removeProperty('color');});
   selEdu='';document.getElementById('edu-display').textContent='Выберите образование';document.getElementById('edu-field').classList.remove('filled');document.getElementById('edu').value='';
   document.getElementById('consent').checked=false;
   document.getElementById('consent2').checked=false;
-  hideErr();window.scrollTo({top:0,behavior:'smooth'})
-});
+  var nm=document.getElementById('selfie-name');if(nm)nm.style.display='none';
+  hideErr();window.scrollTo({top:0,behavior:'smooth'});
+});}
 
 // --- Выбор района ---
-var DISTRICTS = {
-  'Советский район':    ['Взлётка','Северный','Зелёная Роща','Солнечный','Иннокентьевский','Преображенский'],
-  'Центральный район':  ['Исторический центр','Покровский','Яблони','Покровка','Николаевка'],
-  'Октябрьский район':  ['Академгородок','Студгородок','Ветлужанка','Ботанический','Серебряный','Мясокомбинат','Северо-Западный','ГорДК'],
-  'Железнодорожный район': ['Центральная часть','Копылова','Калинина','Железнодорожников','Алексеевка'],
-  'Ленинский район':    ['Черёмушки','Энергетики','Шинников','Суворовский'],
-  'Кировский район':    ['Водники','Первомайский','Нижняя Базаиха','Затон'],
-  'Свердловский район': ['Пашенный','Южный берег','Торгашино','Базаиха','Кузнецовское плато'],
-};
+// Все ПВЗ
+var PVZ_LIST = [
+  {addr:'ул. Яковлева, 46',    mp:'ozon',          lat:56.0089, lng:92.8302},
+  {addr:'ул. Северная, 9',     mp:'ozon',          lat:56.0452, lng:92.8812},
+  {addr:'ул. Ладо Кецховели, 35', mp:'ozon',       lat:56.0104, lng:92.8671},
+  {addr:'ул. Сопочная, 36',    mp:'ozon',          lat:56.0321, lng:92.9014},
+  {addr:'ул. Ольховая, 2а',    mp:'ozon',          lat:56.0198, lng:92.8543},
+  {addr:'ул. Лесопарковая, 15',mp:'ozon',          lat:56.0534, lng:92.9287},
+  {addr:'ул. Марковского, 55', mp:'ozon',          lat:56.0076, lng:92.8891},
+  {addr:'ул. Юшкова, 40а',     mp:'wildberries',   lat:56.0412, lng:92.9156},
+  {addr:'ул. Краснодарская, 37',mp:'yandex_market', lat:55.9934, lng:92.8723},
+  {addr:'ул. Калинина, 181',   mp:'yandex_market', lat:56.0287, lng:92.8634},
+  {addr:'ул. Киренского, 126', mp:'yandex_market', lat:56.0371, lng:92.9312},
+  {addr:'ул. Лесопарковая, 33',mp:'yandex_market', lat:56.0501, lng:92.9271},
+  {addr:'ул. Лесников, 23',    mp:'yandex_market', lat:56.0623, lng:92.9089},
+  {addr:'ул. Мате Залки, 10',  mp:'yandex_market', lat:56.0445, lng:92.8478},
+  {addr:'ул. Ярыгинская, 11',  mp:'yandex_market', lat:56.0094, lng:92.8934},
+];
+
+var userLat=null, userLng=null;
+// Запросить геопозицию
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(function(pos){
+    userLat=pos.coords.latitude;
+    userLng=pos.coords.longitude;
+  }, function(){});
+}
+
+function distKm(lat1,lng1,lat2,lng2){
+  var R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180;
+  var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function openPvzModal(){
+  // Фильтр по выбранным маркетплейсам
+  var mpMap={'ozon':'ozon','wb':'wildberries','ym':'yandex_market'};
+  var allowed=[];
+  selectedMp.forEach(function(v){if(mpMap[v])allowed.push(mpMap[v]);});
+
+  var list=PVZ_LIST.filter(function(p){
+    return allowed.length===0 || allowed.indexOf(p.mp)!==-1;
+  });
+
+  // Сортировка по расстоянию если есть геопозиция
+  if(userLat!==null){
+    list=list.slice().sort(function(a,b){
+      return distKm(userLat,userLng,a.lat,a.lng)-distKm(userLat,userLng,b.lat,b.lng);
+    });
+  }
+
+  var box=document.getElementById('district-list');
+  box.innerHTML='';
+  var wrap=document.createElement('div');
+  wrap.className='d-chips';wrap.style.padding='4px 0';
+  wrap.style.flexDirection='column';wrap.style.gap='8px';
+
+  if(!list.length){
+    wrap.innerHTML='<p style="color:var(--text2);font-size:.88rem;padding:8px 0">Нет пунктов для выбранного маркетплейса</p>';
+  } else {
+    list.forEach(function(p){
+      var dist=userLat!==null?(' — '+distKm(userLat,userLng,p.lat,p.lng).toFixed(1)+' км'):'';
+      var mpLabel={'ozon':'OZON','wildberries':'WB','yandex_market':'ЯМ'}[p.mp]||p.mp;
+      var mpColor={'ozon':'var(--ozon)','wildberries':'var(--wb)','yandex_market':'#b8960a'}[p.mp]||'var(--text2)';
+      var el=document.createElement('div');
+      el.className='pvz-list-item'+(p.addr===selDistrict?' selected':'');
+      el.innerHTML='<span class="pvz-list-badge" style="color:'+mpColor+'">'+mpLabel+'</span>'
+        +'<span class="pvz-list-addr">'+p.addr+'</span>'
+        +(dist?'<span class="pvz-list-dist">'+dist+'</span>':'');
+      el.addEventListener('click',function(){pickPvz(p.addr,p.mp);});
+      wrap.appendChild(el);
+    });
+  }
+  box.appendChild(wrap);
+
+  document.getElementById('modal-title').textContent='Выберите пункт выдачи';
+  document.getElementById('district-search').value='';
+  document.getElementById('district-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+  setTimeout(function(){document.getElementById('district-search').focus();},100);
+}
+
+function pickPvz(addr, mp){
+  selDistrict=addr;
+  document.getElementById('district-display').textContent=addr;
+  document.getElementById('district-field').classList.add('filled');
+  document.getElementById('work-addr').value=addr;
+  closeModal();
+}
+
+// Поиск в ПВЗ модале
+function filterItems(val){
+  if(modalMode==='edu'){renderItems(val);return;}
+  // Для ПВЗ — перефильтровать
+  var f=val.toLowerCase();
+  var items=document.getElementById('district-list').querySelectorAll('.pvz-list-item');
+  items.forEach(function(el){
+    el.style.display=el.textContent.toLowerCase().includes(f)?'':'none';
+  });
+}
 
 var selDistrict = '', selMicro = '', selEdu = '', modalMode = '';
 var EDU_OPTIONS = [
@@ -734,7 +835,7 @@ var EDU_OPTIONS = [
 function openModal(mode) {
   modalMode = mode;
   document.getElementById('district-search').value = '';
-  var title = mode === 'district' ? 'Выберите район' : 'Выберите образование';
+  var title = 'Выберите образование';
   document.getElementById('modal-title').textContent = title;
   renderItems('');
   document.getElementById('district-modal').classList.add('open');
@@ -754,16 +855,7 @@ function renderItems(filter) {
   wrap.className = 'd-chips';
   wrap.style.padding = '4px 0';
 
-  if (modalMode === 'district') {
-    Object.keys(DISTRICTS).forEach(function(d){
-      if (f && !d.toLowerCase().includes(f)) return;
-      var el = document.createElement('div');
-      el.className = 'd-chip' + (d === selDistrict ? ' selected' : '');
-      el.textContent = d;
-      el.addEventListener('click', function(){ pickDistrict(d); });
-      wrap.appendChild(el);
-    });
-  } else if (modalMode === 'edu') {
+  if (modalMode === 'edu') {
     EDU_OPTIONS.forEach(function(o){
       if (f && !o.label.toLowerCase().includes(f)) return;
       var el = document.createElement('div');
