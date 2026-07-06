@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23005BFF'/%3E%3Cstop offset='50%25' stop-color='%23CB11AB'/%3E%3Cstop offset='100%25' stop-color='%23FFCC00'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='52' text-anchor='middle' font-size='52' font-weight='900' fill='%23fff' font-family='system-ui'%3EJ%3C/text%3E%3C/svg%3E">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>Панель управления — ПВЗ Анкеты</title>
 <style>
 :root{
@@ -44,6 +44,16 @@ body{
   background-image:radial-gradient(ellipse at 20% 20%,rgba(0,91,255,.12) 0%,transparent 50%),
     radial-gradient(ellipse at 80% 80%,rgba(203,17,171,.08) 0%,transparent 50%);
 }
+
+
+/* ─── Мобильная стабилизация ─── */
+html{overflow-x:hidden;width:100%}
+body{overflow-x:hidden;width:100%;max-width:100vw;-webkit-text-size-adjust:100%}
+*{min-width:0}
+input,select,textarea{font-size:16px!important;max-width:100%;box-sizing:border-box}
+table{table-layout:fixed}
+.container{max-width:min(1400px,100%);overflow-x:hidden}
+img,.thumb{max-width:100%;height:auto}
 
 /* ── LOGIN ── */
 .screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
@@ -112,7 +122,7 @@ select option{background:#1a1a2e;color:#f0f2ff}
 }
 .btn-p:active{transform:translateY(0)}
 .btn-o{background:var(--surface);color:var(--text);border-color:var(--border)}
-.btn-sm{padding:5px 14px;font-size:.78rem}
+.btn-sm{padding:5px 10px;font-size:.78rem;white-space:nowrap}
 .btn-block{width:100%;border-radius:var(--radius-sm)}
 .btn-lg{padding:12px 24px;font-size:.92rem}
 
@@ -199,7 +209,7 @@ th{
   color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;
 }
 [data-theme="light"] th{background:rgba(0,0,0,.03)}
-td{padding:14px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
+td{padding:12px 10px;border-bottom:1px solid var(--border);vertical-align:middle;overflow:hidden}
 tr:last-child td{border-bottom:none}
 tbody tr{transition:background .12s}
 tbody tr:hover td{background:rgba(255,255,255,.05)}
@@ -225,9 +235,10 @@ tbody tr:hover td{background:rgba(255,255,255,.05)}
 
 /* ── CALL BTN ── */
 .call-btn{
-  display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:100px;
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:5px 12px;border-radius:100px;
   background:rgba(34,197,94,.15);color:#4ade80;border:1px solid rgba(34,197,94,.3);
-  font-size:.76rem;font-weight:600;text-decoration:none;white-space:nowrap;
+  font-size:.78rem;font-weight:600;text-decoration:none;white-space:nowrap;
   transition:all .15s;font-family:inherit;cursor:pointer;
 }
 .call-btn:hover{background:rgba(34,197,94,.3);border-color:rgba(34,197,94,.5)}
@@ -310,6 +321,20 @@ tbody tr:hover td{background:rgba(255,255,255,.05)}
   .mc{border-radius:16px;max-height:90vh}
   .mf .btn{font-size:.72rem;padding:6px 6px;min-width:0}
 }
+
+@media(max-width:600px){
+  .tw{overflow-x:hidden!important}
+  .tw table{display:none!important}
+  .tw thead{display:none!important}
+  .card-list{display:flex!important}
+  .ft{flex-direction:column}
+  .ft .fg,.ft .fg.srch{min-width:0;width:100%}
+  .ft-acts{width:100%;display:flex;gap:8px}
+  .ft-acts .btn{flex:1}
+  .stats{grid-template-columns:repeat(3,1fr)!important;gap:6px}
+  .hdr-inner h1{font-size:.95rem}
+  .admin-name{display:none}
+}
 </style>
 </head>
 <body>
@@ -335,7 +360,7 @@ tbody tr:hover td{background:rgba(255,255,255,.05)}
     <div class="container">
       <div class="hdr-inner">
         <h1>Панель управления</h1>
-        <div class="hdr-r"><span class="admin-name" id="admin-name"></span><button class="theme-toggle" id="theme-toggle">☀️ Тема</button><button class="btn btn-o btn-sm" id="pw-btn" style="color:#fff;border-color:rgba(255,255,255,.4)"><span class="pw-dt">Пароль</span><span class="pw-mob">🔑</span></button><button class="btn btn-o btn-sm" id="logout-btn" style="color:#fff;border-color:rgba(255,255,255,.4)">Выйти</button></div>
+        <div class="hdr-r"><button id="theme-toggle" class="theme-toggle" style="position:relative;z-index:20">🌙</button><span class="admin-name" id="admin-name"></span><button class="btn btn-o btn-sm" id="pw-btn" style="color:#fff;border-color:rgba(255,255,255,.4)"><span class="pw-dt">Пароль</span><span class="pw-mob">🔑</span></button><button class="btn btn-o btn-sm" id="logout-btn" style="color:#fff;border-color:rgba(255,255,255,.4)">Выйти</button></div>
       </div>
       <div class="mp-badges">
         <span class="mp-badge mp-ozon-b">OZON</span>
@@ -363,7 +388,7 @@ tbody tr:hover td{background:rgba(255,255,255,.05)}
 
     <div class="tw">
       <div class="loading" id="loading">Загрузка...</div>
-      <table><thead><tr><th>Дата</th><th>ФИО</th><th>Телефон</th><th>Возраст</th><th>Маркетплейс</th><th>Район / Адрес</th><th>Статус</th><th></th></tr></thead><tbody id="tbody"></tbody></table>
+      <table style="table-layout:fixed;width:100%"><thead><tr><th style="width:120px">Дата</th><th style="width:180px">ФИО</th><th style="width:130px">Телефон</th><th style="width:60px">Возраст</th><th style="width:110px">Маркетплейс</th><th style="width:150px">Район / Адрес</th><th style="width:90px">Статус</th><th style="width:160px"></th></tr></thead><tbody id="tbody"></tbody></table>
     </div>
   </main>
 </div>
@@ -496,7 +521,7 @@ function render(){
     <td>${MP[a.marketplace]||a.marketplace}</td>
     <td>${esc(a.work_location_addr||a.primary_address||'—')}${a.exact_address?`<br><span style="font-size:.75rem;color:var(--text2)">${esc(a.exact_address)}</span>`:''}</td>
     <td><span class="badge ${a.status}">${ST[a.status]||a.status}</span></td>
-    <td style="white-space:nowrap"><div style="display:flex;gap:6px;align-items:center">${a.phone?`<a href="tel:${esc(a.phone)}" class="call-btn">Позвонить</a>`:''}<button class="btn btn-o btn-sm view" data-id="${a.id}">Открыть</button></div></td>
+    <td style="width:160px;max-width:160px;padding:10px 8px"><div style="display:flex;gap:4px;align-items:center;flex-wrap:nowrap">${a.phone?`<a href="tel:${esc(a.phone)}" class="call-btn">Позвонить</a>`:''}<button class="btn btn-o btn-sm view" data-id="${a.id}">Открыть</button></div></td>
   </tr>`).join('');
   tbody.querySelectorAll('.view').forEach(b=>b.addEventListener('click',()=>open(b.dataset.id)));
 
@@ -627,29 +652,30 @@ function esc(s){if(!s)return'';const d=document.createElement('div');d.textConte
 
 init()
 
-// --- Тема ---
+</script>
+
+
+
+<script>
 (function(){
   var root=document.documentElement;
-  var stored=localStorage.getItem('admin-theme');
-  var sysDark=window.matchMedia('(prefers-color-scheme:dark)');
-  var current=stored||(sysDark.matches?'dark':'light');
-  root.setAttribute('data-theme',current);
-  function apply(theme){
-    root.setAttribute('data-theme',theme);
-    var btn=document.getElementById('theme-toggle');
-    if(btn)btn.textContent=theme==='dark'?'☀️ Тема':'🌙 Тема';
+  var btn=document.getElementById('theme-toggle');
+  var KEY='admin-theme';
+  var sys=window.matchMedia('(prefers-color-scheme:dark)');
+  var stored=localStorage.getItem(KEY);
+  var cur=stored?stored:(sys.matches?'dark':'light');
+  function apply(t){
+    root.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?'☀️':'🌙';
   }
-  apply(current);
-  document.addEventListener('DOMContentLoaded',function(){
-    apply(root.getAttribute('data-theme'));
-    var btn=document.getElementById('theme-toggle');
-    if(btn)btn.addEventListener('click',function(){
-      var next=root.getAttribute('data-theme')==='dark'?'light':'dark';
-      localStorage.setItem('admin-theme',next);apply(next);
-    });
+  apply(cur);
+  btn.addEventListener('click',function(){
+    var next=(root.getAttribute('data-theme')==='dark')?'light':'dark';
+    localStorage.setItem(KEY,next);
+    apply(next);
   });
-  sysDark.addEventListener('change',function(e){
-    if(!localStorage.getItem('admin-theme'))apply(e.matches?'dark':'light');
+  sys.addEventListener('change',function(e){
+    if(!localStorage.getItem(KEY))apply(e.matches?'dark':'light');
   });
 })();
 </script>
