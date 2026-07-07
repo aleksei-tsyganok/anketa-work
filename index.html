@@ -218,7 +218,7 @@ input[type="date"]{width:100%;min-width:0;max-width:100%;display:block;min-heigh
 .consent-check{
   display:flex;align-items:flex-start;gap:10px;
   cursor:pointer;font-size:.84rem;line-height:1.55;color:var(--text2);
-  user-select:none;margin-bottom:10px;
+  margin-bottom:10px;touch-action:manipulation;
 }
 .consent-check:last-child{margin-bottom:0}
 .consent-check input[type="checkbox"]{width:18px;height:18px;min-width:18px;accent-color:var(--ozon);cursor:pointer;margin-top:2px;padding:0}
@@ -313,6 +313,22 @@ input[type="date"]{width:100%;min-width:0;max-width:100%;display:block;min-heigh
 }
 [data-theme="light"] #em-wrap{background:rgba(255,255,255,.7)}
 [data-theme="light"] #em-wrap:focus-within{background:rgba(0,91,255,.04)!important}
+
+.consent-box-check{
+  width:20px;height:20px;min-width:20px;border-radius:5px;
+  border:2px solid var(--border-strong);background:rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;margin-top:2px;flex-shrink:0;
+}
+.consent-check.checked .consent-box-check{
+  background:var(--ozon);border-color:var(--ozon);
+}
+.consent-check.checked .consent-box-check::after{
+  content:'';display:block;width:5px;height:9px;
+  border:2px solid #fff;border-top:none;border-left:none;
+  transform:rotate(45deg) translate(-1px,-1px);
+}
+[data-theme="light"] .consent-box-check{background:rgba(255,255,255,.8);border-color:#ccc}
 </style>
 </head>
 <body>
@@ -407,25 +423,21 @@ input[type="date"]{width:100%;min-width:0;max-width:100%;display:block;min-heigh
           </div>
         </div>
         <div class="fg" style="margin-bottom:12px">
-          <label>Район <span style="color:var(--ozon)">*</span></label>
-          <div class="district-field" id="district-field" onclick="openModal('district')">
-            <span id="district-display">Выберите район</span>
+          <label>Желаемый пункт выдачи <span style="color:var(--ozon)">*</span></label>
+          <div class="district-field" id="district-field" onclick="openPvzModal()">
+            <span id="district-display">Выберите адрес ПВЗ</span>
             <span class="district-field-arrow">▼</span>
           </div>
+          <p style="font-size:.76rem;color:var(--text2);margin-top:5px">Сначала выберите маркетплейс — покажем только его пункты</p>
         </div>
-
         <input type="hidden" id="work-addr">
-        <div class="fg" style="margin-top:12px">
-          <label for="exact-addr" style="color:var(--text2)">По желанию напишите точный адрес</label>
-          <input type="text" id="exact-addr" placeholder="Например: ул. Северная, 15">
-        </div>
 
-        <!-- Модальное окно -->
+        <!-- Модальное окно ПВЗ и образования -->
         <div class="d-modal" id="district-modal">
           <div class="d-modal-bg" onclick="closeModal()"></div>
           <div class="d-modal-box">
             <div class="d-modal-hdr">
-              <h3 id="modal-title">Выберите район</h3>
+              <h3 id="modal-title">Выберите пункт выдачи</h3>
               <button class="d-modal-close" onclick="closeModal()">✕</button>
             </div>
             <div class="d-modal-search">
@@ -446,14 +458,16 @@ input[type="date"]{width:100%;min-width:0;max-width:100%;display:block;min-heigh
           <strong>Передача третьим лицам:</strong> не осуществляется без вашего письменного согласия.<br><br>
           Вы вправе в любой момент отозвать согласие, обратившись к работодателю. Отзыв не влияет на законность обработки, осуществлённой до его получения.
         </div>
-        <label class="consent-check">
-          <input type="checkbox" id="consent" required>
+        <div class="consent-check" onclick="toggleConsent('consent',this)" id="consent-wrap">
+          <div class="consent-box-check" id="consent-visual"></div>
           <span>Я ознакомлен(а) с условиями обработки персональных данных и даю согласие в соответствии с требованиями ФЗ № 152-ФЗ.</span>
-        </label>
-        <label class="consent-check">
-          <input type="checkbox" id="consent2" required>
+        </div>
+        <div class="consent-check" onclick="toggleConsent('consent2',this)" id="consent2-wrap">
+          <div class="consent-box-check" id="consent2-visual"></div>
           <span>Подтверждаю, что все указанные сведения являются достоверными и актуальными.</span>
-        </label>
+        </div>
+        <input type="hidden" id="consent" value="">
+        <input type="hidden" id="consent2" value="">
       </div>
 
       <div class="err" id="err"></div>
@@ -611,10 +625,9 @@ form.addEventListener('submit',async e=>{
   if(!selectedPvzExp.size)return showErr('Укажите опыт работы на ПВЗ');
   if(!data.education)return showErr('Выберите образование');
   if(!data.about)return showErr('Заполните поле «О себе»');
-  if(!selDistrict)return showErr('Выберите район работы');
+  if(!selDistrict)return showErr('Выберите желаемый пункт выдачи');
   if(!selFile)return showErr('Прикрепите фото');
-  if(!document.getElementById('consent').checked)return showErr('Необходимо дать согласие на обработку персональных данных');
-  if(!document.getElementById('consent2').checked)return showErr('Подтвердите достоверность указанных сведений');
+  if(!consentState.consent||!consentState.consent2)return showErr('Необходимо согласиться с условиями обработки данных');
   if(!sb)return showErr('Сервер базы данных не загружен. Проверьте подключение к интернету.');
 
   setLoad(true);
@@ -638,6 +651,97 @@ form.addEventListener('submit',async e=>{
   }finally{setLoad(false)}
 });
 
+
+
+// --- ПВЗ список ---
+var PVZ_LIST = [
+  {addr:'ул. Яковлева, 46',          mp:'ozon',          lat:56.0089, lng:92.8302},
+  {addr:'ул. Северная, 9',            mp:'ozon',          lat:56.0540, lng:92.8790},
+  {addr:'ул. Ладо Кецховели, 35',     mp:'ozon',          lat:56.0095, lng:92.8563},
+  {addr:'ул. Сопочная, 36',           mp:'ozon',          lat:56.0768, lng:92.9103},
+  {addr:'ул. Ольховая, 2а',           mp:'ozon',          lat:56.1098, lng:92.8934},
+  {addr:'ул. Лесопарковая, 15',       mp:'ozon',          lat:56.0612, lng:92.9241},
+  {addr:'ул. Марковского, 55',        mp:'ozon',          lat:56.0189, lng:92.8812},
+  {addr:'ул. Юшкова, 40а',            mp:'wildberries',   lat:56.0487, lng:92.9234},
+  {addr:'ул. Краснодарская, 37',      mp:'yandex_market', lat:55.9987, lng:92.8634},
+  {addr:'ул. Калинина, 181',          mp:'yandex_market', lat:56.0401, lng:92.8523},
+  {addr:'ул. Киренского, 126',        mp:'yandex_market', lat:56.0423, lng:92.9298},
+  {addr:'ул. Лесопарковая, 33',       mp:'yandex_market', lat:56.0589, lng:92.9267},
+  {addr:'ул. Лесников, 23',           mp:'yandex_market', lat:56.0334, lng:92.9412},
+  {addr:'ул. Мате Залки, 10',         mp:'yandex_market', lat:56.0512, lng:92.8645},
+  {addr:'ул. Ярыгинская, 11',         mp:'yandex_market', lat:56.0123, lng:92.8876},
+];
+
+var userLat=null, userLng=null;
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(function(pos){
+    userLat=pos.coords.latitude; userLng=pos.coords.longitude;
+  },function(){});
+}
+
+function distKm(lat1,lng1,lat2,lng2){
+  var R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
+  var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function openPvzModal(){
+  var mpMap={'ozon':'ozon','wb':'wildberries','ym':'yandex_market'};
+  var allowed=[];
+  selectedMp.forEach(function(v){if(mpMap[v])allowed.push(mpMap[v]);});
+
+  var list=PVZ_LIST.filter(function(p){
+    return !allowed.length||allowed.indexOf(p.mp)!==-1;
+  });
+
+  if(userLat!==null){
+    list=list.slice().sort(function(a,b){
+      return distKm(userLat,userLng,a.lat,a.lng)-distKm(userLat,userLng,b.lat,b.lng);
+    });
+  }
+
+  var box=document.getElementById('district-list');
+  box.innerHTML='';
+  var wrap=document.createElement('div');
+  wrap.style.cssText='display:flex;flex-direction:column;gap:8px;padding:4px 0';
+
+  if(!list.length){
+    wrap.innerHTML='<p style="color:var(--text2);font-size:.88rem">Нет пунктов для выбранного маркетплейса</p>';
+  } else {
+    list.forEach(function(p){
+      var dist=userLat!==null?(' · '+distKm(userLat,userLng,p.lat,p.lng).toFixed(1)+' км'):'';
+      var mpColor={'ozon':'#60a5fa','wildberries':'#f0abde','yandex_market':'#fcd34d'}[p.mp]||'var(--text2)';
+      var mpLabel={'ozon':'OZON','wildberries':'WB','yandex_market':'ЯМ'}[p.mp]||p.mp;
+      var el=document.createElement('div');
+      el.className='pvz-list-item'+(p.addr===selDistrict?' selected':'');
+      el.innerHTML='<span class="pvz-list-badge" style="color:'+mpColor+'">'+mpLabel+'</span>'
+        +'<span class="pvz-list-addr">'+p.addr+'</span>'
+        +(dist?'<span class="pvz-list-dist">'+dist+'</span>':'');
+      el.addEventListener('click',function(){
+        selDistrict=p.addr;
+        document.getElementById('district-display').textContent=p.addr;
+        document.getElementById('district-field').classList.add('filled');
+        document.getElementById('work-addr').value=p.addr;
+        closeModal();
+      });
+      wrap.appendChild(el);
+    });
+  }
+  box.appendChild(wrap);
+  document.getElementById('modal-title').textContent='Выберите пункт выдачи';
+  document.getElementById('district-search').value='';
+  document.getElementById('district-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+  setTimeout(function(){document.getElementById('district-search').focus();},100);
+}
+
+function filterItems(val){
+  if(modalMode==='edu'){renderItems(val);return;}
+  var f=val.toLowerCase();
+  document.getElementById('district-list').querySelectorAll('.pvz-list-item').forEach(function(el){
+    el.style.display=el.textContent.toLowerCase().includes(f)?'':'none';
+  });
+}
 
 // --- Выбор района ---
 var DISTRICTS = {
@@ -733,6 +837,15 @@ document.addEventListener('keydown', function(e){
   if (e.key === 'Escape') closeModal();
 });
 
+
+
+var consentState={consent:false,consent2:false};
+function toggleConsent(id,el){
+  consentState[id]=!consentState[id];
+  document.getElementById(id).value=consentState[id]?'1':'';
+  if(consentState[id])el.classList.add('checked');
+  else el.classList.remove('checked');
+}
 
 function showErr(m){errEl.textContent=m;errEl.style.display='block'}
 function hideErr(){errEl.style.display='none';errEl.textContent=''}
