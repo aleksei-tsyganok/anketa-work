@@ -647,7 +647,7 @@ form.addEventListener('submit',async e=>{
     if(error)throw error;
     form.hidden=true;errEl.style.display='none';document.getElementById('success-overlay').classList.add('show');window.scrollTo({top:0,behavior:'smooth'})
   }catch(e){
-    console.error(e);showErr(e.message||'Ошибка отправки')
+    console.error(e);showErr((e.message||'Ошибка отправки')+' ['+JSON.stringify(e).slice(0,200)+']')
   }finally{setLoad(false)}
 });
 
