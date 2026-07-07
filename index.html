@@ -329,6 +329,27 @@ input[type="date"]{width:100%;min-width:0;max-width:100%;display:block;min-heigh
   transform:rotate(45deg) translate(-1px,-1px);
 }
 [data-theme="light"] .consent-box-check{background:rgba(255,255,255,.8);border-color:#ccc}
+
+/* ─── Попап согласия ─── */
+.consent-popup-overlay{
+  position:fixed;inset:0;z-index:99999;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.65);backdrop-filter:blur(8px);padding:20px;
+}
+.consent-popup-overlay.show{display:flex}
+.consent-popup-box{
+  background:rgba(20,20,50,.95);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;padding:36px 28px;text-align:center;
+  max-width:360px;width:100%;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+  animation:popIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+[data-theme="light"] .consent-popup-box{background:rgba(255,255,255,.96);border-color:rgba(0,0,0,.1)}
+.consent-popup-box .icon{font-size:2.5rem;margin-bottom:12px}
+.consent-popup-box h3{font-size:1.1rem;font-weight:700;margin-bottom:8px;color:var(--text)}
+.consent-popup-box p{font-size:.88rem;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.consent-popup-box .btn{min-width:140px}
 </style>
 </head>
 <body>
@@ -497,6 +518,13 @@ var subBtn=document.getElementById('submit-btn'), btnText=document.getElementByI
 var errEl=document.getElementById('err'), againBtn=document.getElementById('again');
 var phInp=document.getElementById('ph');
 var selFile=null;
+var consentState={consent:false,consent2:false};
+function toggleConsent(id,el){
+  consentState[id]=!consentState[id];
+  document.getElementById(id).value=consentState[id]?'1':'';
+  if(consentState[id])el.classList.add('checked');
+  else el.classList.remove('checked');
+}
 
 
 
@@ -627,7 +655,7 @@ form.addEventListener('submit',async e=>{
   if(!data.about)return showErr('Заполните поле «О себе»');
   if(!selDistrict)return showErr('Выберите желаемый пункт выдачи');
   if(!selFile)return showErr('Прикрепите фото');
-  if(!consentState.consent||!consentState.consent2)return showErr('Необходимо согласиться с условиями обработки данных');
+  if(!consentState.consent||!consentState.consent2){document.getElementById('consent-popup').classList.add('show');return;}
   if(!sb)return showErr('Сервер базы данных не загружен. Проверьте подключение к интернету.');
 
   setLoad(true);
@@ -647,7 +675,7 @@ form.addEventListener('submit',async e=>{
     if(error)throw error;
     form.hidden=true;errEl.style.display='none';document.getElementById('success-overlay').classList.add('show');window.scrollTo({top:0,behavior:'smooth'})
   }catch(e){
-    console.error(e);showErr((e.message||'Ошибка отправки')+' ['+JSON.stringify(e).slice(0,200)+']')
+    console.error(e);showErr(e.message||'Ошибка отправки')
   }finally{setLoad(false)}
 });
 
@@ -839,13 +867,6 @@ document.addEventListener('keydown', function(e){
 
 
 
-var consentState={consent:false,consent2:false};
-function toggleConsent(id,el){
-  consentState[id]=!consentState[id];
-  document.getElementById(id).value=consentState[id]?'1':'';
-  if(consentState[id])el.classList.add('checked');
-  else el.classList.remove('checked');
-}
 
 function showErr(m){errEl.textContent=m;errEl.style.display='block'}
 function hideErr(){errEl.style.display='none';errEl.textContent=''}
@@ -885,5 +906,14 @@ function setLoad(l){subBtn.disabled=l;btnText.style.display=l?'none':'inline';bt
   });
 })();
 </script>
+<div class="consent-popup-overlay" id="consent-popup">
+  <div class="consent-popup-box">
+    <div class="icon">📋</div>
+    <h3>Необходимо согласие</h3>
+    <p>Пожалуйста, ознакомьтесь с условиями обработки персональных данных и отметьте оба пункта согласия</p>
+    <button class="btn btn-p" onclick="document.getElementById('consent-popup').classList.remove('show');document.getElementById('consent-wrap').scrollIntoView({behavior:'smooth',block:'center'})">Перейти к согласию</button>
+  </div>
+</div>
+
 </body>
 </html>
