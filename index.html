@@ -642,7 +642,6 @@ form.addEventListener('submit',async e=>{
     education:document.getElementById('edu').value.trim(),
     about:document.getElementById('ab').value.trim(),
     work_location_addr:document.getElementById('work-addr').value||null,
-    exact_address:document.getElementById('exact-addr').value.trim()||null
   };
   if(!data.full_name)return showErr('Укажите ФИО');
   if(!document.getElementById('bd').value)return showErr('Укажите дату рождения');
