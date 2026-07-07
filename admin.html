@@ -8,12 +8,12 @@
 <style>
 :root{
   --ozon:#005BFF;--wb:#CB11AB;--ym:#FFCC00;
-  --bg:#0a0a1a;
-  --surface:rgba(255,255,255,.07);
-  --surface-hover:rgba(255,255,255,.11);
+  --bg:#050508;
+  --surface:rgba(255,255,255,.04);
+  --surface-hover:rgba(255,255,255,.08);
   --text:#f0f2ff;--text2:rgba(240,242,255,.55);
-  --border:rgba(255,255,255,.12);
-  --border-strong:rgba(255,255,255,.22);
+  --border:rgba(255,255,255,.08);
+  --border-strong:rgba(255,255,255,.15);
   --radius:16px;--radius-sm:10px;
   --glass-blur:saturate(180%) blur(20px);
   --shadow:0 4px 24px rgba(0,0,0,.35);
@@ -89,8 +89,8 @@ input:focus,select:focus,textarea:focus{
   background:rgba(0,91,255,.06);
   box-shadow:0 0 0 3px rgba(0,91,255,.15);
 }
-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,.5)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
-[data-theme="light"] select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,.4)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,.5)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px 16px;padding-right:36px}
+[data-theme="light"] select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(0,0,0,.4)' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px 16px}
 select option{background:#1a1a2e;color:#f0f2ff}
 [data-theme="light"] select option{background:#fff;color:#0f1118}
 
@@ -335,6 +335,32 @@ tbody tr:hover td{background:rgba(255,255,255,.05)}
   .hdr-inner h1{font-size:.95rem}
   .admin-name{display:none}
 }
+
+/* ─── Пилюли маркетплейсов ─── */
+.mp-pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;font-size:.7rem;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+.mp-pill-ozon{background:rgba(0,91,255,.2);color:#60a5fa;border:1px solid rgba(0,91,255,.35)}
+.mp-pill-wb{background:rgba(203,17,171,.2);color:#f0abde;border:1px solid rgba(203,17,171,.35)}
+.mp-pill-ym{background:rgba(255,204,0,.15);color:#fcd34d;border:1px solid rgba(255,204,0,.3)}
+[data-theme="light"] .mp-pill-ozon{background:#E8F0FF;color:#005BFF;border-color:#bfdbfe}
+[data-theme="light"] .mp-pill-wb{background:#FCE8F7;color:#CB11AB;border-color:#f5d0fe}
+[data-theme="light"] .mp-pill-ym{background:#FFF9E0;color:#8a6f00;border-color:#fde68a}
+
+.pvz-pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;font-size:.7rem;font-weight:700;letter-spacing:.2px;white-space:nowrap;margin:2px}
+.pvz-pill-no{background:rgba(150,150,150,.15);color:#aaa;border:1px solid rgba(150,150,150,.3)}
+.pvz-pill-ozon{background:rgba(0,91,255,.2);color:#60a5fa;border:1px solid rgba(0,91,255,.35)}
+.pvz-pill-wb{background:rgba(203,17,171,.2);color:#f0abde;border:1px solid rgba(203,17,171,.35)}
+.pvz-pill-ym{background:rgba(255,204,0,.15);color:#fcd34d;border:1px solid rgba(255,204,0,.3)}
+.pvz-pill-dpd{background:rgba(204,0,0,.15);color:#fca5a5;border:1px solid rgba(204,0,0,.3)}
+.pvz-pill-sima{background:rgba(200,200,200,.1);color:#ccc;border:1px solid rgba(200,200,200,.25)}
+[data-theme="light"] .pvz-pill-no{background:#f0f0f0;color:#666;border-color:#ddd}
+[data-theme="light"] .pvz-pill-ozon{background:#E8F0FF;color:#005BFF;border-color:#bfdbfe}
+[data-theme="light"] .pvz-pill-wb{background:#FCE8F7;color:#CB11AB;border-color:#f5d0fe}
+[data-theme="light"] .pvz-pill-ym{background:#FFF9E0;color:#8a6f00;border-color:#fde68a}
+[data-theme="light"] .pvz-pill-dpd{background:#FFF0F0;color:#C00;border-color:#fecaca}
+[data-theme="light"] .pvz-pill-sima{background:#f5f5f5;color:#333;border-color:#ddd}
+
+.emp-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:.75rem;font-weight:700;background:rgba(0,91,255,.15);color:#60a5fa;border:1px solid rgba(0,91,255,.3)}
+[data-theme="light"] .emp-pill{background:#E8F0FF;color:#005BFF;border-color:#bfdbfe}
 </style>
 </head>
 <body>
@@ -381,7 +407,7 @@ tbody tr:hover td{background:rgba(255,255,255,.05)}
 
     <div class="ft">
       <div class="fg"><label for="f-st">Статус</label><select id="f-st"><option value="">Все</option><option value="new">Новые</option><option value="reviewed">Просмотрено</option><option value="hired">Принят</option><option value="rejected">Отказ</option></select></div>
-      <div class="fg"><label for="f-mp">Маркетплейс</label><select id="f-mp"><option value="">Все</option><option value="ozon">OZON</option><option value="wb">Wildberries</option><option value="yandex_market">Яндекс Маркет</option></select></div>
+      <div class="fg"><label for="f-mp">Маркетплейс</label><select id="f-mp"><option value="">Все</option><option value="ozon">OZON</option><option value="wildberries">Wildberries</option><option value="yandex_market">Яндекс Маркет</option></select></div>
       <div class="fg srch"><label for="f-srch">Поиск</label><input type="text" id="f-srch" placeholder="Имя, телефон, email..."></div>
       <div class="ft-acts"><button class="btn btn-p" id="apply-f">Применить</button><button class="btn btn-o" id="reset-f">Сбросить</button></div>
     </div>
@@ -502,7 +528,7 @@ async function load(){
   try{
     let q=sb.from('applications').select('*').order('created_at',{ascending:false});
     if(fSt.value)q=q.eq('status',fSt.value);
-    if(fMp.value)q=q.eq('marketplace',fMp.value);
+    if(fMp.value)q=q.ilike('marketplace','%'+fMp.value+'%');
     if(fSrch.value.trim())q=q.or(`full_name.ilike.%${fSrch.value.trim()}%,phone.ilike.%${fSrch.value.trim()}%,tg.ilike.%${fSrch.value.trim()}%`);
     const {data,error}=await q;
     if(error)throw error;
@@ -518,7 +544,7 @@ function render(){
     <td><div style="display:flex;align-items:center;gap:7px">${a.selfie_url?`<img src="${a.selfie_url}" class="thumb" onclick="window.open('${a.selfie_url}')">`:'<div class="thumb-ph">?</div>'}<strong>${esc(a.full_name)}</strong></div></td>
     <td style="white-space:nowrap">${esc(a.phone)||'—'}</td>
     <td>${age(a.birth_date)}</td>
-    <td>${MP[a.marketplace]||a.marketplace}</td>
+    <td>${mpPills(a.marketplace)}</td>
     <td>${esc(a.work_location_addr||a.primary_address||'—')}${a.exact_address?`<br><span style="font-size:.75rem;color:var(--text2)">${esc(a.exact_address)}</span>`:''}</td>
     <td><span class="badge ${a.status}">${ST[a.status]||a.status}</span></td>
     <td style="width:160px;max-width:160px;padding:10px 8px"><div style="display:flex;gap:4px;align-items:center;flex-wrap:nowrap">${a.phone?`<a href="tel:${esc(a.phone)}" class="call-btn">Позвонить</a>`:''}<button class="btn btn-o btn-sm view" data-id="${a.id}">Открыть</button></div></td>
@@ -532,7 +558,7 @@ function render(){
       <span class="badge ${a.status}">${ST[a.status]||a.status}</span>
     </div>
     <div class="card-line"><span class="card-label">Возраст</span><span class="card-val">${age(a.birth_date)}</span></div>
-    <div class="card-line"><span class="card-label">Маркет</span><span class="card-val">${MP[a.marketplace]||a.marketplace}</span></div>
+    <div class="card-line"><span class="card-label">Маркет</span><span class="card-val">${mpPills(a.marketplace)}</span></div>
     <div class="card-line"><span class="card-label">Район</span><span class="card-val">${esc(a.work_location_addr||a.primary_address||'—')}</span></div>
     <div class="card-line"><span class="card-label">Дата</span><span class="card-val">${dmy(a.created_at)}</span></div>
     <div class="card-acts"><a href="tel:${esc(a.phone)}" class="call-btn" style="text-decoration:none">Позвонить</a><button class="btn btn-o btn-sm view" data-id="${a.id}">Открыть</button></div>
@@ -555,15 +581,14 @@ function open(id){
     <div class="df"><span class="dl">ФИО</span><span class="dv">${esc(a.full_name)}</span></div>
     <div class="df"><span class="dl">Дата рождения</span><span class="dv">${a.birth_date||'—'}</span></div>
     <div class="df"><span class="dl">Телефон</span><span class="dv" style="display:flex;align-items:center;gap:10px"><span>${esc(a.phone)||'—'}</span>${a.phone?`<a href="tel:${esc(a.phone)}" class="call-btn">Позвонить</a>`:''}</span></div>
-    <div class="df"><span class="dl">Email</span><span class="dv">${a.email?`<a href="mailto:${esc(a.email)}">${esc(a.email)}</a>`:'—'}</span></div>
+    <div class="df"><span class="dl">Telegram</span><span class="dv">${a.email?`<a href="https://t.me/${esc(a.email.replace('@',''))}" target="_blank">${esc(a.email)}</a>`:'—'}</span></div>
+    <div class="df"><span class="dl">Тип занятости</span><span class="dv">${empLabel(a.employment_type)}</span></div>
+    <div class="df"><span class="dl">Опыт на ПВЗ</span><span class="dv">${pvzExpPills(a.pvz_experience)}</span></div>
     <div class="df"><span class="dl">Опыт работы</span><span class="dv">${esc(a.experience)||'—'}</span></div>
     <div class="df"><span class="dl">Образование</span><span class="dv">${esc(a.education)||'—'}</span></div>
     <div class="df"><span class="dl">О себе</span><span class="dv">${esc(a.about)||'—'}</span></div>
-    <div class="df"><span class="dl">Маркетплейс</span><span class="dv">${MP[a.marketplace]||a.marketplace}</span></div>
-    <div class="df"><span class="dl">Район работы</span><span class="dv">${esc(a.work_location_addr||a.primary_address||'—')}</span></div>
-    <div class="df"><span class="dl">Точный адрес</span><span class="dv">${esc(a.exact_address)||'—'}</span></div>
-    <div class="df"><span class="dl">Резервный адрес 1</span><span class="dv">${esc(a.backup_address_1)||'—'}</span></div>
-    <div class="df"><span class="dl">Резервный адрес 2</span><span class="dv">${esc(a.backup_address_2)||'—'}</span></div>
+    <div class="df"><span class="dl">Маркетплейс</span><span class="dv">${mpPills(a.marketplace)}</span></div>
+    <div class="df"><span class="dl">Желаемый ПВЗ</span><span class="dv">${esc(a.work_location_addr||a.primary_address||'—')}</span></div>
     <div class="df"><span class="dl">Статус</span><span class="dv"><span class="badge ${a.status}">${ST[a.status]||a.status}</span></span></div>
     <div class="df"><span class="dl">Дата подачи</span><span class="dv">${dmy(a.created_at)}</span></div>
     <div class="cf"><label class="dl" for="cmt">Комментарий</label><textarea id="cmt" rows="3">${esc(a.admin_comment||'')}</textarea></div>
@@ -645,6 +670,58 @@ pwForm.addEventListener('submit',async e=>{
     pwErr.style.display='block'
   }finally{pwSave.disabled=false}
 });
+
+
+
+function pvzExpPills(val){
+  if(!val||val==='не указано')return'<span class="pvz-pill pvz-pill-no">Не указано</span>';
+  var MAP={
+    'нет':'<span class="pvz-pill pvz-pill-no">Нет опыта</span>',
+    'ozon':'<span class="pvz-pill pvz-pill-ozon">OZON</span>',
+    'wildberries':'<span class="pvz-pill pvz-pill-wb">Wildberries</span>',
+    'yandex_market':'<span class="pvz-pill pvz-pill-ym">Яндекс Маркет</span>',
+    'dpd':'<span class="pvz-pill pvz-pill-dpd">DPD</span>',
+    'sima_land':'<span class="pvz-pill pvz-pill-sima">Sima Land</span>',
+  };
+  return val.split(/[,;]+/).map(function(v){
+    v=v.trim();
+    return MAP[v]||('<span class="pvz-pill pvz-pill-no">'+v+'</span>');
+  }).join('');
+}
+
+function empLabel(val){
+  var MAP={'full':'Полная занятость','short':'На короткий период','sub':'На подмены'};
+  var label=MAP[val]||val||'—';
+  if(label==='—')return'—';
+  return'<span class="emp-pill">'+label+'</span>';
+}
+
+function mpPills(val){
+  if(!val)return'—';
+  var MAP={
+    'ozon':'<span class="mp-pill mp-pill-ozon">OZON</span>',
+    'wb':'<span class="mp-pill mp-pill-wb">WB</span>',
+    'wildberries':'<span class="mp-pill mp-pill-wb">WB</span>',
+    'Wildberries':'<span class="mp-pill mp-pill-wb">WB</span>',
+    'yandex_market':'<span class="mp-pill mp-pill-ym">ЯМ</span>',
+    'yandex':'<span class="mp-pill mp-pill-ym">ЯМ</span>',
+    'ym':'<span class="mp-pill mp-pill-ym">ЯМ</span>',
+    'Яндекс Маркет':'<span class="mp-pill mp-pill-ym">ЯМ</span>',
+    'OZON':'<span class="mp-pill mp-pill-ozon">OZON</span>',
+    'Ozon':'<span class="mp-pill mp-pill-ozon">OZON</span>',
+  };
+  return val.split(/[,;]+/).map(function(v){
+    v=v.trim().toLowerCase();
+    var pill=MAP[v]||MAP[v.replace('_',' ')];
+    if(!pill){
+      if(v.includes('ozon'))pill='<span class="mp-pill mp-pill-ozon">OZON</span>';
+      else if(v.includes('wild')||v.includes('wb'))pill='<span class="mp-pill mp-pill-wb">WB</span>';
+      else if(v.includes('yandex')||v.includes('ym')||v.includes('яндекс'))pill='<span class="mp-pill mp-pill-ym">ЯМ</span>';
+      else pill='<span class="mp-pill" style="background:rgba(255,255,255,.1)">'+v+'</span>';
+    }
+    return pill;
+  }).join(' ');
+}
 
 function dmy(s){if(!s)return'—';const d=new Date(s);return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}
 function age(bd){if(!bd)return'—';const b=new Date(bd),t=new Date();let a=t.getFullYear()-b.getFullYear();const m=t.getMonth()-b.getMonth();if(m<0||(m===0&&t.getDate()<b.getDate()))a--;return a+' г'}

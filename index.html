@@ -8,12 +8,12 @@
 <style>
 :root{
   --ozon:#005BFF;--wb:#CB11AB;--ym:#FFCC00;
-  --bg:#0a0a1a;
-  --surface:rgba(255,255,255,.07);
-  --surface-hover:rgba(255,255,255,.11);
+  --bg:#050508;
+  --surface:rgba(255,255,255,.04);
+  --surface-hover:rgba(255,255,255,.08);
   --text:#f0f2ff;--text2:rgba(240,242,255,.55);
-  --border:rgba(255,255,255,.12);
-  --border-strong:rgba(255,255,255,.22);
+  --border:rgba(255,255,255,.08);
+  --border-strong:rgba(255,255,255,.15);
   --radius:16px;--radius-sm:10px;
   --glass:saturate(180%) blur(20px);
   --shadow:0 4px 24px rgba(0,0,0,.35);
@@ -36,10 +36,9 @@ body{
   line-height:1.6;-webkit-font-smoothing:antialiased;
   overflow-x:hidden;width:100%;min-height:100vh;
   background-image:
-    radial-gradient(ellipse at 15% 15%,rgba(0,91,255,.28) 0%,transparent 50%),
-    radial-gradient(ellipse at 85% 85%,rgba(203,17,171,.22) 0%,transparent 50%),
-    radial-gradient(ellipse at 50% 50%,rgba(20,20,70,.9) 0%,transparent 100%);
-  background-attachment:fixed;
+    radial-gradient(ellipse at 15% 15%,rgba(0,91,255,.15) 0%,transparent 45%),
+    radial-gradient(ellipse at 85% 85%,rgba(203,17,171,.12) 0%,transparent 45%),
+    radial-gradient(ellipse at 50% 50%,rgba(4,4,12,1) 0%,transparent 100%);
 }
 [data-theme="light"] body{
   background-image:
@@ -57,9 +56,9 @@ body{
   border-bottom:1px solid rgba(255,255,255,.15);
 }
 .header::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 40%,rgba(255,204,0,.18),transparent 60%);pointer-events:none}
-.header .container{position:relative;z-index:1}
+.header .container{position:relative;z-index:10}
 .header{padding-bottom:0!important}
-.header-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:28px 0 18px}
+.header-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:28px 0 18px;position:relative;z-index:10}
 .header h1{font-size:1.6rem;font-weight:800;letter-spacing:-.4px;line-height:1.15}
 .header .sub{opacity:.8;font-size:.9rem;margin-top:4px}
 .mp-badges{display:flex;gap:8px;flex-wrap:wrap;padding:0 0 18px}
@@ -79,18 +78,18 @@ body{
   cursor:pointer;display:flex;align-items:center;gap:5px;
   transition:all .2s;white-space:nowrap;font-family:inherit;
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  flex-shrink:0;
+  flex-shrink:0;position:relative;z-index:10;
 }
 .theme-toggle:hover{background:rgba(255,255,255,.22)}
 
 /* ── FORM ── */
 .form{padding:24px 0}
 .sec{
-  background:var(--surface);
-  backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);
+  background:rgba(255,255,255,.03);
   border:1px solid var(--border);border-radius:var(--radius);
   padding:24px;margin-bottom:14px;box-shadow:var(--shadow);
 }
+[data-theme="light"] .sec{background:rgba(255,255,255,.75)}
 .sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:18px}
 .step{
   width:30px;height:30px;border-radius:50%;
@@ -157,7 +156,6 @@ input[type="date"]{width:100%;min-width:0;max-width:100%;display:block;min-heigh
   display:inline-flex;align-items:center;gap:7px;
   padding:8px 16px;border-radius:100px;
   border:1px solid var(--border);background:var(--surface);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   font-size:.84rem;font-weight:600;color:var(--text2);
   cursor:pointer;transition:all .18s;user-select:none;
   touch-action:manipulation;-webkit-tap-highlight-color:transparent;
@@ -229,7 +227,6 @@ input[type="date"]{width:100%;min-width:0;max-width:100%;display:block;min-heigh
   display:flex;align-items:center;gap:10px;
   padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);
   background:rgba(255,255,255,.07);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   cursor:pointer;transition:border-color .2s;
   font-size:.92rem;color:var(--text2);user-select:none;
 }
@@ -307,18 +304,26 @@ input[type="date"]{width:100%;min-width:0;max-width:100%;display:block;min-heigh
   .footer{padding:14px 0}
   .mp-badge{width:120px;font-size:.65rem}
 }
+
+#em-wrap:focus-within{
+  border-color:rgba(0,91,255,.6)!important;
+  box-shadow:0 0 0 3px rgba(0,91,255,.18)!important;
+  background:rgba(0,91,255,.07)!important;
+}
+[data-theme="light"] #em-wrap{background:rgba(255,255,255,.7)}
+[data-theme="light"] #em-wrap:focus-within{background:rgba(0,91,255,.04)!important}
 </style>
 </head>
 <body>
 <div class="app">
   <header class="header">
     <div class="container">
-      <div class="header-inner" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+      <div class="header-inner" style="position:relative;z-index:20" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
         <div>
           <h1>Анкета соискателя</h1>
           <p class="sub">Работа на пункте выдачи заказов</p>
         </div>
-        <button class="theme-toggle" id="theme-toggle">☀️ Тема</button>
+      <button id="theme-toggle" class="theme-toggle" style="position:relative;z-index:20;flex-shrink:0">🌙</button>
       </div>
       <div class="mp-badges">
         <span class="mp-badge mp-ozon-b">OZON</span>
@@ -336,7 +341,14 @@ input[type="date"]{width:100%;min-width:0;max-width:100%;display:block;min-heigh
           <div class="fg"><label for="fn">ФИО *</label><input type="text" id="fn" required placeholder="Иванов Иван Иванович"></div>
           <div class="fg"><label for="bd">Дата рождения <span style="color:var(--ozon)">*</span></label><input type="date" id="bd" required value="2000-01-01" min="1950-01-01" max="2010-12-31"></div>
           <div class="fg"><label for="ph">Телефон *</label><input type="tel" id="ph" required placeholder="+7 (999) 123-45-67" inputmode="numeric" value="+7"></div>
-          <div class="fg"><label for="em">Telegram <span style="color:var(--ozon)">*</span></label><input type="text" id="em" placeholder="@username или t.me/username" required></div>
+          <div class="fg"><label for="em">Telegram <span style="color:var(--ozon)">*</span></label>
+          <div style="display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--radius-sm);background:rgba(255,255,255,.07);overflow:hidden;transition:border-color .2s,box-shadow .2s" id="em-wrap">
+            <span style="padding:0 10px 0 14px;color:var(--text2);font-size:16px;font-weight:600;user-select:none;flex-shrink:0">@</span>
+            <input type="text" id="em" placeholder="username" required
+              style="border:none;border-radius:0;background:transparent;padding:11px 14px 11px 0;box-shadow:none;flex:1"
+              oninput="this.value=this.value.replace(/[@\s]/g,'')">
+          </div>
+        </div>
         </div>
       </div>
 
@@ -578,7 +590,7 @@ form.addEventListener('submit',async e=>{
   const data={
     full_name:document.getElementById('fn').value.trim(),
     phone,
-    email:document.getElementById('em').value.trim(),
+    email:'@'+document.getElementById('em').value.trim().replace(/^@/,''),
     birth_date:document.getElementById('bd').value||null,
     experience:document.getElementById('exp').value.trim(),
     marketplace:selectedMp.size?[...selectedMp].join(', '):null,
@@ -592,7 +604,7 @@ form.addEventListener('submit',async e=>{
   if(!data.full_name)return showErr('Укажите ФИО');
   if(!document.getElementById('bd').value)return showErr('Укажите дату рождения');
   if(pdigs.length<7)return showErr('Введите номер телефона');
-  if(!data.email)return showErr('Укажите Telegram');
+  if(!document.getElementById('em').value.trim())return showErr('Укажите Telegram');
   if(!selectedMp.size)return showErr('Выберите маркетплейс');
   if(!selectedEmployment)return showErr('Выберите тип занятости');
   if(!selectedPvzExp.size)return showErr('Укажите опыт работы на ПВЗ');
@@ -625,15 +637,6 @@ form.addEventListener('submit',async e=>{
   }finally{setLoad(false)}
 });
 
-
-  selectedEmployment='';document.querySelectorAll('.pvz-exp-chip[data-group="employment"]').forEach(ch=>{ch.style.borderColor='';ch.style.background='';ch.style.color=''});
-  selectedPvzExp.clear();document.querySelectorAll('.pvz-exp-chip[data-group="pvz_exp"]').forEach(ch=>{ch.classList.remove('checked-no','checked-ozon','checked-wb','checked-ym','checked-dpd','checked-sima')});
-  selectedMp=new Set();document.querySelectorAll('.pvz-exp-chip[data-group="mp"]').forEach(ch=>{ch.style.borderColor='';ch.style.background='';ch.style.color='';});
-  selEdu='';document.getElementById('edu-display').textContent='Выберите образование';document.getElementById('edu-field').classList.remove('filled');document.getElementById('edu').value='';
-  document.getElementById('consent').checked=false;
-  document.getElementById('consent2').checked=false;
-  hideErr();window.scrollTo({top:0,behavior:'smooth'})
-});
 
 // --- Выбор района ---
 var DISTRICTS = {
@@ -729,46 +732,6 @@ document.addEventListener('keydown', function(e){
   if (e.key === 'Escape') closeModal();
 });
 
-// --- Тема ---
-(function(){
-  var root = document.documentElement;
-  var stored = localStorage.getItem('theme');
-  var sysDark = window.matchMedia('(prefers-color-scheme:dark)');
-
-  function apply(theme){
-    var btn = document.getElementById('theme-toggle');
-    if(theme === 'dark'){
-      root.setAttribute('data-theme','dark');
-      if(btn) btn.textContent = '☀️';
-    } else {
-      root.setAttribute('data-theme','light');
-      if(btn) btn.textContent = '🌙';
-    }
-  }
-
-  // Применяем сразу при загрузке (без кнопки — она ещё не в DOM)
-  var current = stored || (sysDark.matches ? 'dark' : 'light');
-  root.setAttribute('data-theme', current);
-
-  // После загрузки DOM — обновляем иконку и вешаем обработчик
-  document.addEventListener('DOMContentLoaded', function(){
-    apply(root.getAttribute('data-theme'));
-    var btn = document.getElementById('theme-toggle');
-    if(btn){
-      btn.addEventListener('click', function(){
-        var now = root.getAttribute('data-theme');
-        var next = now === 'dark' ? 'light' : 'dark';
-        localStorage.setItem('theme', next);
-        apply(next);
-      });
-    }
-  });
-
-  // Следим за системной темой
-  sysDark.addEventListener('change', function(e){
-    if(!localStorage.getItem('theme')) apply(e.matches ? 'dark' : 'light');
-  });
-})();
 
 function showErr(m){errEl.textContent=m;errEl.style.display='block'}
 function hideErr(){errEl.style.display='none';errEl.textContent=''}
@@ -782,5 +745,31 @@ function setLoad(l){subBtn.disabled=l;btnText.style.display=l?'none':'inline';bt
   </div>
 </div>
 
+
+
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var btn=document.getElementById('theme-toggle');
+  var KEY='theme';
+  var sys=window.matchMedia('(prefers-color-scheme:dark)');
+  var stored=localStorage.getItem(KEY);
+  var cur=stored?stored:(sys.matches?'dark':'light');
+  function apply(t){
+    root.setAttribute('data-theme',t);
+    btn.textContent=(t==='dark')?'☀️':'🌙';
+  }
+  apply(cur);
+  btn.addEventListener('click',function(){
+    var next=(root.getAttribute('data-theme')==='dark')?'light':'dark';
+    localStorage.setItem(KEY,next);
+    apply(next);
+  });
+  sys.addEventListener('change',function(e){
+    if(!localStorage.getItem(KEY))apply(e.matches?'dark':'light');
+  });
+})();
+</script>
 </body>
 </html>
